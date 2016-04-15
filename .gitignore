@@ -1,3 +1,6 @@
+# Directories
+build/
+
 # ---> C
 # Object files
 *.o
