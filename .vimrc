@@ -9,4 +9,5 @@ nnoremap <F4> :make!<cr>
 " ! prevents vim from jumping to first error found
 nnoremap <F5> :!./build/main
 " executing program!
-
+syntax on
+vsp

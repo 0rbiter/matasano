@@ -35,15 +35,15 @@ char *b64_encode(char *TEMPSTRING)
 
 	// fancy bitshifting and bit-wise operations over here to extract the 6 bits per Base64 sign
 	unsigned int d = 0;
-	for (c=0; c<(strlen(TEMPSTRING) / 4); c+=2)
+	for (c=0; c<(strlen(TEMPSTRING) / 4); c+=3)
 	{
 		iBase64[d] = lBuffer[c] >> 10;
 		iBase64[d+1] = lBuffer[c] >> 4 & 0x003f;
 		iBase64[d+2] = ((lBuffer[c] & 0x000f) << 2) ^ (lBuffer[c+1] >> 14);
-		iBase64[d+3] = (lBuffer[c+1] << 2) >> 10;
+		iBase64[d+3] = (lBuffer[c+1] >> 8) & 0x003f;
 		
 		iBase64[d+4] = (lBuffer[c+1] >> 2) & 0x003f;
-		iBase64[d+5] = ((lBuffer[c+1] << 4) ^ (lBuffer[c+2] >> 4)) & 0x003f;
+		iBase64[d+5] = ((lBuffer[c+1] & 0x0003) << 4) ^ (lBuffer[c+2] >> 12);
 		iBase64[d+6] = (lBuffer[c+2] >> 6) & 0x003f;
 		iBase64[d+7] = lBuffer[c+2] & 0x003f;
 	
