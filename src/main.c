@@ -98,16 +98,8 @@ int main()
 	}
 	printf("\nUsing:\n");
 	puts( BCOMP_STRING );
-	
+	printf("\nSolution:\n");
 	puts( b64_encode(BCOMP_STRING) );
-	unsigned int tester = 0x2349;
-	printf("\n%i", tester);
-
-/*
-	char *testing = "Hello this is a test!";
-	puts(testing);
-	//printf("%i", isTerminated("blubber blah"));
-	if (isTerminated(testing) > 0) { printf("\nokay, jetzt!"); }
-*/
+	
 	return 0;
 }
