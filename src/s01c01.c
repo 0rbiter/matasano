@@ -4,8 +4,8 @@
 #include "matasano.h"
 
 // static prevents from conflicts with other files
-char *HEXSTRING = "1c0111001f010100061a024b53535009181c";
-char *HEXSTRING2 = "686974207468652062756c6c277320657965";
+char *HEXSTRING = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
+
 int main()
 {
 	int charcount = strlen(HEXSTRING);

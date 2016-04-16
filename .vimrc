@@ -10,4 +10,4 @@ nnoremap <F4> :make!<cr>
 nnoremap <F5> :!./build/main
 " executing program!
 syntax on
-vsp
+" vsp
