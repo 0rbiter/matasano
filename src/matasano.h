@@ -1,90 +1,101 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
-// static prevents from conflicts with other files
-/* static const char *BASE64CODES = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+char HEXTABLE[2][16];
+static const char *BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-
-char *b64_encode(char *TEMPSTRING)
+void buildHexTable()
 {
-	int a,b,c;
-	char _CHARS[5];
-
-	int buffersize = strlen(TEMPSTRING)/4;
-
-    buffersize = buffersize + (buffersize % 6);
-	unsigned long lBuffer[buffersize];
-	char *OUT_STR;
-	b = 0;
-	for (a=0; a<buffersize*4; a+=4)
-	{
-        if (a < strlen(TEMPSTRING))
+    unsigned char zero = 0x00;
+    unsigned char A = 55;
+    unsigned char zeroChar = 48;
+    int i;
+    for(i=0; i<16; i++)
+    {
+        if(i<10)
         {
-            memcpy(_CHARS, &TEMPSTRING[a*sizeof(char)], 4);
-            _CHARS[4] = '\0';
+            HEXTABLE[0][i] = zeroChar + i;
         }
         else
         {
-            memcpy(_CHARS, "0000", 4);
+            HEXTABLE[0][i] = A + i;
         }
-        lBuffer[b] = (unsigned long) strtol(_CHARS, NULL, 16);
-		printf("%s converted to: %lu\n", _CHARS, lBuffer[b]);
-		b++;
-	}
-
-
-	unsigned int b64buffersize = strlen(TEMPSTRING) / 6 * 4;
-	unsigned char iBase64[b64buffersize];
-
-	// fancy bitshifting and bit-wise operations over here to extract the 6 bits per Base64 sign
-	unsigned int d = 0;
-	for (c=0; c<(strlen(TEMPSTRING) / 4); c+=3)
-	{
-		iBase64[d] = lBuffer[c] >> 10;
-		iBase64[d+1] = lBuffer[c] >> 4 & 0x003f;
-		iBase64[d+2] = ((lBuffer[c] & 0x000f) << 2) ^ (lBuffer[c+1] >> 14);
-		iBase64[d+3] = (lBuffer[c+1] >> 8) & 0x003f;
-		
-		iBase64[d+4] = (lBuffer[c+1] >> 2) & 0x003f;
-		iBase64[d+5] = ((lBuffer[c+1] & 0x0003) << 4) ^ (lBuffer[c+2] >> 12);
-		iBase64[d+6] = (lBuffer[c+2] >> 6) & 0x003f;
-		iBase64[d+7] = lBuffer[c+2] & 0x003f;
-	
-		d = d + 8;
-	}
-    char *RTR_STR = malloc(sizeof(char) * b64buffersize);
-    for (c=0; c<b64buffersize; c++)
-    {
-        RTR_STR[c] = BASE64CODES[iBase64[c]];
+        HEXTABLE[1][i] = zero + i;
     }
-    return RTR_STR;
+
 
 }
 
-char *b64_FILLER(char *TEMPSTRING)
+unsigned char charTo4Bits(char input, unsigned int leftorright)
 {
-    int FillByteCount = 6 - (strlen(TEMPSTRING) % 6);
-    char *OUT_STR = malloc((strlen(TEMPSTRING) + FillByteCount));	
-	if ((strlen(TEMPSTRING) % 6) > 0) {
-		printf("ERROR - filling up with 0 bytes");
-        strncpy(OUT_STR, TEMPSTRING, strlen(TEMPSTRING));
-        printf("\n%lu", strlen(OUT_STR));
-        int i;
-        for (i=0; i<(strlen(OUT_STR)+1); i++)
+    int i = 0;
+    while(HEXTABLE[0][i] != toupper(input))
+    {
+        i++;
+    }
+
+    if(leftorright % 2 == 0)
+    {
+        return HEXTABLE[1][i] << 4;
+    }
+    else
+    {
+        return HEXTABLE[1][i]; 
+    }
+}
+
+unsigned char *charsToBytes(char *input)
+{
+    int i;
+    int length = strlen(input);
+    unsigned char *output = (unsigned char *) calloc(length/2, sizeof(unsigned char));
+    
+    int counter = 0;
+    for(i=0; i<(length/2); i++)
+    {
+        output[i] |= charTo4Bits(input[counter], counter);
+        counter++;
+        output[i] |= charTo4Bits(input[counter], counter);
+        counter++;
+    }
+    return output;
+}
+
+void shiftArrayLeft(unsigned char *input, int size, int shift)
+{
+    int i, s;
+    unsigned char carry = 0x00f;
+    for(s=shift; s>0; s--)
+    {
+        for(i=0; i<(size); i++)
         {
-            //printf("%i", i);
-            if (OUT_STR[i] == '\0' && FillByteCount != 0) {
-                OUT_STR[i] = '0';
-                FillByteCount--;
-            }
+            carry = (input[i+1] & 0x80) >> 7;
+            input[i] = carry | (input[i] << 1);
         }
     }
-	else
-	{
-		printf("OK - continuing with Base64 encoding");
-		OUT_STR = TEMPSTRING;
-	}
-	return OUT_STR;
-} */
+}
+
+char *decode(char *input)
+{
+    int i;
+    int inputlength = strlen(input)/2;
+    int length = inputlength/3*4;
+    unsigned char *bytebuffer = calloc(inputlength, sizeof(unsigned char));
+    char *output = calloc(length+1, sizeof(char));
+    buildHexTable();
+    bytebuffer = charsToBytes(input);
+    
+    output[0] = BASE64[bytebuffer[0] >> 2];
+    shiftArrayLeft(bytebuffer, inputlength, 6);
+    
+    for(i=1; i<length; i++)
+    {
+        output[i] = BASE64[bytebuffer[0] >> 2];
+        shiftArrayLeft(bytebuffer, inputlength, 6);
+    }
+    free(bytebuffer);
+    return output;
+}
+

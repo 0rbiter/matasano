@@ -10,7 +10,7 @@ OUT_DIR = build/
 all: directories main.o
 
 main.o: src/main.c
-	clang src/main.c -o build/main
+	clang -fdiagnostics-format=vi -g  src/main.c -o build/main
 	clang -c src/main.c -o build/main.o
 	chmod +x build/main
 
