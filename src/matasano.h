@@ -4,31 +4,36 @@
 #include <string.h>
 
 // static prevents from conflicts with other files
-static const char *BASE64CODES = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+/* static const char *BASE64CODES = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 
 char *b64_encode(char *TEMPSTRING)
 {
 	int a,b,c;
 	char _CHARS[5];
+
 	int buffersize = strlen(TEMPSTRING)/4;
+
+    buffersize = buffersize + (buffersize % 6);
 	unsigned long lBuffer[buffersize];
 	char *OUT_STR;
 	b = 0;
-	for (a=0; a<(strlen(TEMPSTRING)); a+=4)
+	for (a=0; a<buffersize*4; a+=4)
 	{
-		memcpy(_CHARS, &TEMPSTRING[a*sizeof(char)], 4);
-		_CHARS[4] = '\0';
-		//puts( _CHARS );
-		lBuffer[b] = (unsigned long) strtol(_CHARS, NULL, 16);
-		//printf("%lu\n", lBuffer[b]);
+        if (a < strlen(TEMPSTRING))
+        {
+            memcpy(_CHARS, &TEMPSTRING[a*sizeof(char)], 4);
+            _CHARS[4] = '\0';
+        }
+        else
+        {
+            memcpy(_CHARS, "0000", 4);
+        }
+        lBuffer[b] = (unsigned long) strtol(_CHARS, NULL, 16);
+		printf("%s converted to: %lu\n", _CHARS, lBuffer[b]);
 		b++;
 	}
 
-	/* the HEX string has for example 96 signs, they are converted by the for loop above
-	into 24 unsigned long values á 2 bytes each and take up 48bytes in this example.
-	Therefore the buffersize aka items in the Base64 list á 1 byte each must be 48 / 3 * 4
-	or 96 / 6 * 4 */
 
 	unsigned int b64buffersize = strlen(TEMPSTRING) / 6 * 4;
 	unsigned char iBase64[b64buffersize];
@@ -49,29 +54,37 @@ char *b64_encode(char *TEMPSTRING)
 	
 		d = d + 8;
 	}
-	for (c=0; c<b64buffersize; c++)
-	{
-		printf("%c", BASE64CODES[iBase64[c]]);
-	}
-	//strncpy(OUT_STR, _CHARS, strlen(_CHARS));
-	//return OUT_STR;
-	return "";
+    char *RTR_STR = malloc(sizeof(char) * b64buffersize);
+    for (c=0; c<b64buffersize; c++)
+    {
+        RTR_STR[c] = BASE64CODES[iBase64[c]];
+    }
+    return RTR_STR;
+
 }
 
 char *b64_FILLER(char *TEMPSTRING)
 {
-	int FillByteCount = 6 - (strlen(TEMPSTRING) % 6);
-	char *OUT_STR = malloc((strlen(TEMPSTRING) + FillByteCount));	
-	strncpy(OUT_STR, TEMPSTRING, strlen(TEMPSTRING));
-	printf("\n%lu", strlen(OUT_STR));
-	int i;
-	for (i=0; i<(strlen(OUT_STR)+1); i++)
+    int FillByteCount = 6 - (strlen(TEMPSTRING) % 6);
+    char *OUT_STR = malloc((strlen(TEMPSTRING) + FillByteCount));	
+	if ((strlen(TEMPSTRING) % 6) > 0) {
+		printf("ERROR - filling up with 0 bytes");
+        strncpy(OUT_STR, TEMPSTRING, strlen(TEMPSTRING));
+        printf("\n%lu", strlen(OUT_STR));
+        int i;
+        for (i=0; i<(strlen(OUT_STR)+1); i++)
+        {
+            //printf("%i", i);
+            if (OUT_STR[i] == '\0' && FillByteCount != 0) {
+                OUT_STR[i] = '0';
+                FillByteCount--;
+            }
+        }
+    }
+	else
 	{
-		//printf("%i", i);
-		if (OUT_STR[i] == '\0' && FillByteCount != 0) {
-			OUT_STR[i] = '0';
-			FillByteCount--;
-		}
+		printf("OK - continuing with Base64 encoding");
+		OUT_STR = TEMPSTRING;
 	}
 	return OUT_STR;
-}
+} */
