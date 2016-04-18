@@ -63,19 +63,29 @@ char *BytesToChar(unsigned char *inputbytes, int length)
 
 
 
-unsigned char *charsToBytes(char *input)
+unsigned char *charsToBytes(char *input, long length)
 {
     int i;
-    int length = strlen(input);
-    unsigned char *output = (unsigned char *) calloc(length/2, sizeof(unsigned char));
-    
+    printf("Break 1\n");
+    unsigned char *output = (unsigned char *) calloc(1, sizeof(unsigned char));
+    printf("Break 2\n");
+    if(length>1) output = (unsigned char *) realloc(output, length/2+1);
+    printf("Break 3\n");
     int counter = 0;
-    for(i=0; i<(length/2); i++)
+    if(length>1)
     {
-        output[i] |= charTo4Bits(input[counter], counter);
-        counter++;
-        output[i] |= charTo4Bits(input[counter], counter);
-        counter++;
+        for(i=0; i<(length/2); i++)
+        {
+            output[i] |= charTo4Bits(input[counter], counter);
+            counter++;
+            output[i] |= charTo4Bits(input[counter], counter);
+            counter++;
+        }
+    }
+    else if(length == 1)
+    {
+        output[0] |= charTo4Bits(input[0], 0);
+        output[0] |= charTo4Bits(input[0], 1);
     }
     return output;
 }
@@ -105,15 +115,29 @@ char *xor(char *input1, char *input2)
     char *output = calloc(inputlength*2+1, sizeof(char));
 
     buildHexTable();
-    if(strlen(input1) == strlen(input2)) {
-        bytebuffer1 = charsToBytes(input1);
-        bytebuffer2 = charsToBytes(input2);
+    if(strlen(input2) == strlen(input1)) {
+        bytebuffer1 = charsToBytes(input1, strlen(input1));
+        bytebuffer2 = charsToBytes(input2, strlen(input2));
 
         for(i=0; i<inputlength; i++)
         {
             byteoutput[i] = bytebuffer1[i] ^ bytebuffer2[i];
         }
 
+        free(bytebuffer1);
+        free(bytebuffer2);
+        output = BytesToChar(byteoutput, inputlength);
+    }
+    else if(strlen(input1) > strlen(input2) && strlen(input2) == 1)
+    {    
+        byteoutput = realloc(byteoutput, inputlength);
+        output = realloc(output, (inputlength*2)+1);
+        bytebuffer1 = charsToBytes(input1, strlen(input1));
+        bytebuffer2 = charsToBytes(input2, 1);
+        for(i=0; i<inputlength; i++)
+        {
+            byteoutput[i] = bytebuffer1[i] ^ bytebuffer2[0];
+        }
         free(bytebuffer1);
         free(bytebuffer2);
         output = BytesToChar(byteoutput, inputlength);
@@ -136,7 +160,7 @@ char *decode(char *input)
     unsigned char *bytebuffer = calloc(inputlength, sizeof(unsigned char));
     char *output = calloc(length+1, sizeof(char));
     buildHexTable();
-    bytebuffer = charsToBytes(input);
+    bytebuffer = charsToBytes(input, strlen(input));
     
     for(i=0; i<length; i++)
     {
