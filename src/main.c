@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "matasano.h"
+#include "matasano2.h"
 #include <ctype.h>
 
 // static prevents from conflicts with other files
@@ -21,9 +21,13 @@ int main()
 	printf("\nLength (bits/chars/bytes): %i/%i/%i", bitcount, charcount, bitcount/8);
     
 	printf("\nSolution:\n");
-    puts( decode(HEXSTRING) );
-    puts( decode(HEXSTRING2) );
+    
+    char* b64HS = (char*) calloc(strlen(HEXSTRING)/3*2+1, 1);
+    b64HS[strlen(HEXSTRING)/3*2] = '\0';
 
-    puts( decode(HEXSTRING3) );
+    decode(b64HS, HEXSTRING, strlen(HEXSTRING));
+    puts(b64HS);
+
+    free(b64HS);
     return 0;
 }
