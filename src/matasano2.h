@@ -39,11 +39,11 @@ unsigned char charTo4Bits(char input, unsigned int leftorright)
 
     if(leftorright % 2 == 0)
     {
-        return HEXTABLE[0][i] << 4;
+        return HEXTABLE[1][i] << 4;
     }
     else
     {
-        return HEXTABLE[0][i];
+        return HEXTABLE[1][i];
     }
 }
 
@@ -66,9 +66,16 @@ void shiftArrayLeft(unsigned char *input, int size, int shift)
 void decode(char* output, char* input, int inputlength)
 {
     if(inputlength % 2 != 0) { printf("too short"); exit(-1); }
-    int outputlength = inputlength / 3 * 2; //96 -> 64, 48 -> 24 etc.   
+    int fillercount = 0;
+    int outputlength = (inputlength / 6 * 4); //96 -> 64, 48 -> 24 etc.
+    if(inputlength % 6 > 0) outputlength += 4; fillercount = inputlength % 6;
+
+    printf("Inputlength: %i\n", inputlength); 
+    printf("Outputlength: %i\n", outputlength); 
     unsigned char* buffer = (unsigned char*) calloc(inputlength/2, 1);
     int i, a = 0;
+    char filler = '=';
+
     for(i=0; i<inputlength/2; i++)
     {
         buffer[i] |= charTo4Bits(input[a], a);
@@ -76,10 +83,20 @@ void decode(char* output, char* input, int inputlength)
         buffer[i] |= charTo4Bits(input[a], a);
         a++;
     }
-    for(i=0; i<inputlength/2; i++)
+    for(i=0; i<outputlength; i++)
     {
         output[i] = BASE64[(buffer[0] >> 2)];
         shiftArrayLeft(buffer, inputlength/2, 6);
+    }
+    if(fillercount > 0)
+    {
+        int b;
+        for(b=0; b<=fillercount/2-2; b++)
+        {
+            printf("counter. %i\n", b);
+            output[outputlength-1-b] = filler;
+        }
+
     }
     free(buffer);
 
