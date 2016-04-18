@@ -30,8 +30,10 @@ void buildHexTable()
 
 unsigned char charTo4Bits(char input, unsigned int leftorright)
 {
+    printf("FUCK");
+    if(HEXTABLE[0][0] != '0') printf("OK"); buildHexTable();
     int i = 0;
-    while(HEXTABLE[0][i] != toupper(input))
+    while(HEXTABLE[0][i] != input)
     {
         i++;
     }
