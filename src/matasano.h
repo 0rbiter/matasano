@@ -79,22 +79,28 @@ void shiftArrayLeft(unsigned char *input, int size, int shift)
 
 char *decode(char *input)
 {
-    int i;
+    int i, fc;
     int inputlength = strlen(input)/2;
-    int length = inputlength/3*4;
+    
+    int fillercount = strlen(input)%6;
+    char filler = '=';
+
+    int length;
+    if(fillercount == 0) length = (inputlength/3*4);
+    else length = (inputlength/3*4)+4;
+
     unsigned char *bytebuffer = calloc(inputlength, sizeof(unsigned char));
     char *output = calloc(length+1, sizeof(char));
     buildHexTable();
     bytebuffer = charsToBytes(input);
     
-    output[0] = BASE64[bytebuffer[0] >> 2];
-    shiftArrayLeft(bytebuffer, inputlength, 6);
-    
-    for(i=1; i<length; i++)
+    for(i=0; i<length; i++)
     {
         output[i] = BASE64[bytebuffer[0] >> 2];
         shiftArrayLeft(bytebuffer, inputlength, 6);
+        if((i>=length-1-(fillercount/2)) && fillercount > 0) output[i] = filler;
     }
+
     free(bytebuffer);
     return output;
 }
