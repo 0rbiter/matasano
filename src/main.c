@@ -25,6 +25,8 @@ int main()
     puts( decode(HEXSTRING2) );
     printf("\n XOR w/o B64 decoding against single character:\n");
 
+    printf("Like: %i", (int) 1/2);
+
     char *SINGLE = (char *) calloc(2, sizeof(char));
     char SINGLEAR[1] = { 0x00 };
     int i;

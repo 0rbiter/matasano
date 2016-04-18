@@ -48,7 +48,7 @@ unsigned char charTo4Bits(char input, unsigned int leftorright)
 
 char *BytesToChar(unsigned char *inputbytes, int length)
 {
-    char *output = (char *) calloc((length/2)+1, sizeof(char));
+    char *output = (char *) calloc(length/2+1, sizeof(char));
     int i, i2 = 0;
     for(i=0; i<(length/2); i++)
     {
@@ -67,7 +67,7 @@ unsigned char *charsToBytes(char *input, long length)
 {
     int i;
     printf("Break 1\n");
-    unsigned char *output = (unsigned char *) calloc(1, sizeof(unsigned char));
+    unsigned char *output = (unsigned char *) calloc(1, sizeof(char));
     printf("Break 2\n");
     if(length>1) output = (unsigned char *) realloc(output, length/2+1);
     printf("Break 3\n");
