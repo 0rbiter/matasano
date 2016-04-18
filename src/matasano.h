@@ -46,6 +46,23 @@ unsigned char charTo4Bits(char input, unsigned int leftorright)
     }
 }
 
+char *BytesToChar(unsigned char *inputbytes, int length)
+{
+    char *output = (char *) calloc((length/2)+1, sizeof(char));
+    int i, i2 = 0;
+    for(i=0; i<(length/2); i++)
+    {
+        i2 = (i+1)*2;
+        //printf("Left: %i -- Right: %i\n",  (int) inputbytes[i] >> 4, (int) (inputbytes[i] & 0x0F));
+        //printf("i: %i -- i2(1/2): %i/%i\n", i, i2-2, i2-1);
+        output[i2-2] = HEXTABLE[0][inputbytes[i] >> 4];
+        output[i2-1] = HEXTABLE[0][inputbytes[i] & 0x0F];
+    }
+    return output;
+}
+
+
+
 unsigned char *charsToBytes(char *input)
 {
     int i;
@@ -75,6 +92,33 @@ void shiftArrayLeft(unsigned char *input, int size, int shift)
             input[i] = carry | (input[i] << 1);
         }
     }
+}
+
+char *xor(char *input1, char *input2)
+{
+    int inputlength = strlen(input1);
+    int i;
+
+    unsigned char *bytebuffer1 = calloc(inputlength, sizeof(unsigned char));
+    unsigned char *bytebuffer2 = calloc(inputlength, sizeof(unsigned char));
+    unsigned char *byteoutput = calloc(inputlength, sizeof(unsigned char));
+    char *output = calloc(inputlength*2+1, sizeof(char));
+
+    buildHexTable();
+    if(strlen(input1) == strlen(input2)) {
+        bytebuffer1 = charsToBytes(input1);
+        bytebuffer2 = charsToBytes(input2);
+
+        for(i=0; i<inputlength; i++)
+        {
+            byteoutput[i] = bytebuffer1[i] ^ bytebuffer2[i];
+        }
+
+        free(bytebuffer1);
+        free(bytebuffer2);
+        output = BytesToChar(byteoutput, inputlength);
+    }
+    return output;
 }
 
 char *decode(char *input)
