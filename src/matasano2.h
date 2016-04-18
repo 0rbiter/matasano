@@ -70,8 +70,6 @@ void decode(char* output, char* input, int inputlength)
     int outputlength = (inputlength / 6 * 4); //96 -> 64, 48 -> 24 etc.
     if(inputlength % 6 > 0) outputlength += 4; fillercount = inputlength % 6;
 
-    printf("Inputlength: %i\n", inputlength); 
-    printf("Outputlength: %i\n", outputlength); 
     unsigned char* buffer = (unsigned char*) calloc(inputlength/2, 1);
     int i, a = 0;
     char filler = '=';
@@ -91,10 +89,10 @@ void decode(char* output, char* input, int inputlength)
     if(fillercount > 0)
     {
         int b;
-        for(b=0; b<=fillercount/2-2; b++)
+        for(b=(3-fillercount/2); b>0; b--)
         {
             printf("counter. %i\n", b);
-            output[outputlength-1-b] = filler;
+            output[outputlength-b] = filler;
         }
 
     }
