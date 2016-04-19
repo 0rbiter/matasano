@@ -6,6 +6,13 @@
 char HEXTABLE[2][16];
 static const char *BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
+long b64length(char* pre_decode_STRING)
+{
+    int addition = 0;
+    if(strlen(pre_decode_STRING) % 6 > 0) addition = 4;
+    return (long) strlen(pre_decode_STRING) / 3 * 2 + addition + 1;
+}
+
 void buildHexTable()
 {
     unsigned char zero = 0x00;
@@ -48,7 +55,7 @@ unsigned char charTo4Bits(char input, unsigned int leftorright)
 }
 
 
-void shiftArrayLeft(unsigned char *input, int size, int shift)
+void shiftArrayLeft(unsigned char* input, int size, int shift)
 {
     int i, s;
     unsigned char carry = 0x00f;
@@ -91,7 +98,6 @@ void decode(char* output, char* input, int inputlength)
         int b;
         for(b=(3-fillercount/2); b>0; b--)
         {
-            printf("counter. %i\n", b);
             output[outputlength-b] = filler;
         }
 
