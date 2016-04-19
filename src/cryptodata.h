@@ -17,5 +17,5 @@ struct base64 {
         unsigned char *bytebuffer;
         long bytelength;
         char *b64_string;
-        char *ascii_string;
+        unsigned char *ascii_string;
 } base64;

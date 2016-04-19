@@ -93,24 +93,30 @@ void bytesToB64(char *b64_string, unsigned char *buffer, long b64len, long buffe
 }
 
 
-void string_decode(char *input, long inputlength)
+void string_decode(char *output, char *input, long inputlength)
 {
         struct base64 *xobject = malloc(sizeof(struct base64));
         xobject->inputlength = inputlength;
         xobject->b64_string = (char*) calloc(xobject->inputlength+1, 1);
-        xobject->ascii_string = (char*) calloc(xobject->inputlength/4*3+1, 1);
+        xobject->ascii_string = (unsigned char*) calloc(xobject->inputlength/4*3, 1);
         memcpy(xobject->b64_string, input, inputlength);
-
-        char *tempchar = calloc(5, 1);
-        tempchar[4] = '\0';
-        long i, j = 0;
-        for(i=1; i <= inputlength/4; i++) {
-                memcpy(tempchar, xobject->b64_string+4*i, 4);
+        
+        if(inputlength % 4 > 0) exit(0);
+        
+        long b, a;
+        for(b=0; b<inputlength; b++) {
+                a=0;
+                while(xobject->b64_string[b] != BASE64[a] && a < 64 && xobject->b64_string[b] != '=')
+                        a++;
+                shiftArrayLeft(xobject->ascii_string, inputlength/4*3, 6);
+                xobject->ascii_string[inputlength/4*3-1] |= a;
         }
-        printf("Test:\n");
-        puts(tempchar);
-        printf("\nEnd!\n");
+        memcpy(output, xobject->ascii_string, inputlength/4*3);
+        output[inputlength/4*3] = '\0';
 
+        free(xobject->b64_string);
+        free(xobject->ascii_string);
+        free(xobject);
 
 }
 
@@ -133,7 +139,6 @@ void hexstring_encode(char *output, char *input, long inputlength)
         bytesToB64(dobject->b64_string, dobject->bytebuffer, b64length(dobject->input), dobject->inputlength/2);
 
         memcpy(output, dobject->b64_string, b64length(dobject->input));
-        string_decode(dobject->b64_string, strlen(dobject->b64_string));
 
         free(dobject->bytebuffer);
         free(dobject->b64_string);
