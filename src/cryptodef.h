@@ -93,7 +93,28 @@ void bytesToB64(char *b64_string, unsigned char *buffer, long b64len, long buffe
 }
 
 
-void decode(char *output, char *input, long inputlength)
+void string_decode(char *input, long inputlength)
+{
+        struct base64 *xobject = malloc(sizeof(struct base64));
+        xobject->inputlength = inputlength;
+        xobject->b64_string = (char*) calloc(xobject->inputlength+1, 1);
+        xobject->ascii_string = (char*) calloc(xobject->inputlength/4*3+1, 1);
+        memcpy(xobject->b64_string, input, inputlength);
+
+        char *tempchar = calloc(5, 1);
+        tempchar[4] = '\0';
+        long i, j = 0;
+        for(i=1; i <= inputlength/4; i++) {
+                memcpy(tempchar, xobject->b64_string+4*i, 4);
+        }
+        printf("Test:\n");
+        puts(tempchar);
+        printf("\nEnd!\n");
+
+
+}
+
+void hexstring_encode(char *output, char *input, long inputlength)
 {
         if(inputlength % 2 != 0) {
                 printf("too short");
@@ -112,8 +133,10 @@ void decode(char *output, char *input, long inputlength)
         bytesToB64(dobject->b64_string, dobject->bytebuffer, b64length(dobject->input), dobject->inputlength/2);
 
         memcpy(output, dobject->b64_string, b64length(dobject->input));
+        string_decode(dobject->b64_string, strlen(dobject->b64_string));
 
         free(dobject->bytebuffer);
         free(dobject->b64_string);
         free(dobject);
 }
+
