@@ -106,17 +106,17 @@ int main()
                 }
 
 
-                float offset = 5;
+                float offset = 3;
 
                 for(l=0; l < 26; l++) {
                         myscores[l] = score[l]/letters_counted;
                         myscores[l] = 100 * myscores[l];
-                        if(letterscore[l]+offset <= myscores[l] && letterscore[l]+offset >= myscores[l]) {
+                        if(letterscore[l]-offset <= myscores[l] ^ letterscore[l]+offset <= myscores[l]) {
                                 points += 10;
                         }
                 }
                 points += letters_counted/5;
-                if(points > 32) {
+                if(points > 200) {
                         puts(NEWSTRING);
                         for(l=0; l < 26; l++) {
                                 if(l % 6 == 0 && l != 0)
