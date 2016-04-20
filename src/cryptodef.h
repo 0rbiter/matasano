@@ -131,13 +131,13 @@ void hexstring_encode_bytes(unsigned char *output, char *input, long inputlength
         dobject->inputlength = strlen(input);
         dobject->input = input;
         dobject->bytebuffer = (unsigned char*) calloc(dobject->inputlength/2, 1);
-        dobject->b64_string = (char*) calloc(b64length(dobject->input), 1);
+        //dobject->b64_string = (char*) calloc(b64length(dobject->input), 1);
 
 
         dobject->bytebuffer = realloc(dobject->bytebuffer, dobject->inputlength/2);
         stringToBytes(dobject->bytebuffer, dobject->input);
 
-        memcpy(output, dobject->bytebuffer, inputlength-1);
+        memcpy(output, dobject->bytebuffer, inputlength/2);
 
         free(dobject->bytebuffer);
         free(dobject);
@@ -172,8 +172,8 @@ void hexstring_encode_b64(char *output, char *input, long inputlength)
 void equal_xor(unsigned char* output, char *input1, char *input2, long length)
 {
         long c;
-        unsigned char *bytes_input1 = calloc(length-1, 1);
-        unsigned char *bytes_input2 = calloc(length-1, 1);
+        unsigned char *bytes_input1 = calloc(length+16, 1);
+        unsigned char *bytes_input2 = calloc(length+16, 1);
 
         hexstring_encode_bytes(bytes_input1, input1, length);
         hexstring_encode_bytes(bytes_input2, input2, length);
@@ -212,6 +212,7 @@ void xor(char *output, char *input1, char *input2)
                 free(output_buffer->bytebuffer);
                 free(output_buffer->b64_string);
                 free(output_buffer);
+                return;
                 
 
         }
