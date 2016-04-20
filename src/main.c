@@ -2,7 +2,10 @@
 #include "cryptodata.h"
 #include "cryptodef.h"
 
-char *HEXSTRING3 = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
+void separate()
+{
+        puts("\n\n###############################################################");
+}
 
 int main()
 {
@@ -26,27 +29,46 @@ int main()
         free(decoded_string);
         free(b64HS);
 
+        separate();
         /*
          * Challenge 2, XOR 2 HEX values from input strings + Base64 decode
          */
         char *HEXSTRING1 = "1c0111001f010100061a024b53535009181c";
         char *HEXSTRING2 = "686974207468652062756C6C277320657965";
-
         puts("XOR these two hex strings:");
         puts(HEXSTRING1);
         puts(HEXSTRING2);
-
         char *xor_b64 = calloc(b64length(HEXSTRING1), 1);
-
-        xor(xor_b64, HEXSTRING1, HEXSTRING2);
+        xor_hexstrings(xor_b64, HEXSTRING1, HEXSTRING2);
         puts(xor_b64);
   
         char *xor_string = calloc(strlen(xor_b64), 1);
         b64_decode_string(xor_string, xor_b64, strlen(xor_b64));
         puts(xor_string);
-
         free(xor_b64);
         free(xor_string);
+
+        separate();
+        /*
+         * Challenge 3, XOR 2 HEX values with different length from input strings,
+         * and print HEX string
+         */
+        char *HEXSTRING3 = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
+
+        separate();
+        /*
+         * Challenge 5
+         */
+        puts("XOR these two strings");
+        char *STRING4 = "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal";
+        char *STRING5 = "ICE";
+        puts("XOR these two hex strings:");
+        puts(STRING4);
+        puts(STRING5);
+        char *xor_hexstring = malloc(1);
+        xor_strings(xor_string, STRING4, STRING5);
+
+        puts(xor_string);
 
         return 0;
 }
