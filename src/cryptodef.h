@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,6 +37,7 @@ void shiftArrayLeft(unsigned char *input, int size, int shift)
                 }
         }
 }
+
 unsigned char charTo4Bits(char input, unsigned int leftorright)
 {
         if(HEXTABLE[0][0] != '0') buildHexTable();
@@ -50,6 +50,22 @@ unsigned char charTo4Bits(char input, unsigned int leftorright)
                 return HEXTABLE[1][i] << 4;
         else
                 return HEXTABLE[1][i];
+}
+
+void bitsToHexchar(char *output, char *input)
+{
+        if(HEXTABLE[0][0] != '0') buildHexTable();
+        long c;
+        long o = 0;
+        for(c=0; c < strlen(input); c++) {
+                output[o] = HEXTABLE[0][input[c] >> 4];
+                o++;
+                output[o] = HEXTABLE[0][input[c] & 0x0F];
+                o++;
+
+        }
+        output[strlen(input)*2] = '\0';
+
 }
 
 void hexstringToBytes(unsigned char *buffer, char *input)
@@ -200,9 +216,10 @@ void xor_strings(char *output, char *input1, char *input2)
         for(c=0; c < longer; c++) {
                 output[c] = input1[c] ^ input2[shortcounter];
                 shortcounter++;
-                if(shortcounter == shorter)
+                if(shortcounter >= shorter)
                         shortcounter = 0;
         }
+        output[longer] = '\0';
 
 }
 

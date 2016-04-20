@@ -65,10 +65,14 @@ int main()
         puts("XOR these two hex strings:");
         puts(STRING4);
         puts(STRING5);
-        char *xor_hexstring = malloc(1);
-        xor_strings(xor_string, STRING4, STRING5);
 
-        puts(xor_string);
+        char *xor_string2 = calloc(strlen(STRING4)+1, 1);
+        char *xor_hexstring = calloc(strlen(STRING4)*2+1, 1);
+        xor_strings(xor_string2, STRING4, STRING5);
+        bitsToHexchar(xor_hexstring, xor_string2);
 
+        puts(xor_hexstring);
+        free(xor_hexstring);
+        free(xor_string2);
         return 0;
 }
