@@ -1,32 +1,23 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "matasano2.h"
-#include <ctype.h>
-
-// static prevents from conflicts with other files
-//char *HEXSTRING = "1C0111001F010100061A024B53535009181C0F0F0F";
-char *HEXSTRING = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
-char *HEXSTRING2 = "686974207468652062756C6C277320657965";
-char *HEXSTRING3 = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
+//#include "crypto.h"
+#include "cryptodata.h"
+#include "cryptodef.h"
 
 int main()
 {
-	int charcount = strlen(HEXSTRING);
-	int bitcount = charcount * 4;
-	
-    printf("Hexadecimal to convert to Base64:\n");
+        printf("Hexadecimal to convert to Base64:\n");
 	puts( HEXSTRING );
-	printf("\nLength (bits/chars/bytes): %i/%i/%i", bitcount, charcount, bitcount/8);
-    
-	printf("\nSolution:\n");
-    
-    char* b64HS = (char*) calloc(b64length(HEXSTRING), 1);
-    //b64HS[strlen(HEXSTRING)/3*2] = '\0';
+    	printf("\nSolution 1:\n");
+        char *b64HS = (char*) calloc(b64length(HEXSTRING), 1);
+        hexstring_encode(b64HS, HEXSTRING, strlen(HEXSTRING));
+        puts(b64HS);
 
-    decode(b64HS, HEXSTRING, strlen(HEXSTRING));
-    puts(b64HS);
+        puts("Convert to ASCII:");
+        char *decoded_string = calloc(strlen(b64HS)/4*3+1, 1);
+        string_decode(decoded_string, b64HS, strlen(b64HS));
+        puts(decoded_string);
 
-    free(b64HS);
-    return 0;
+        free(decoded_string);
+        free(b64HS);
+
+        return 0;
 }
