@@ -53,8 +53,87 @@ int main()
          * Challenge 3, XOR 2 HEX values with different length from input strings,
          * and print HEX string
          */
-        char *HEXSTRING3 = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
+        char HEXSTRING3[] = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736\0";
+        char *STRING3 = calloc(strlen(HEXSTRING3)/2+1, 1);
+        char SINGLECHAR[] = "A\0";
+        int i, c;
+        
+        hexstringToString(STRING3, HEXSTRING3);
+       
+        long str_length = strlen(STRING3);
+        char *NEWSTRING = calloc(str_length+1, 1);
 
+        float letterscore[26] = { 8.167, 1.492, 2.782, 4.253, 12.702, 2.228, 2.015, 6.094, 6.966, 0.153, 0.772, 4.025, 2.406, 6.749, 7.507, 1.929, 0.095, 5.987, 6.327, 9.056, 2.758, 0.978, 2.361, 0.150, 1.974, 0.074 };
+        float score[26];
+        unsigned long letters_counted = 0;
+        int l = 0;
+        long points = 0;
+        float myscores[26];
+
+        printf("English Language scores:\n");
+        for(l=0; l < 26; l++) {
+                if(l % 6 == 0 && l != 0)
+                        printf("\n");
+                printf("%c %.2f\t", A+l, letterscore[l]);
+        }
+        printf("\n\n");
+        for(i=0; i < 256; i++) {
+                SINGLECHAR[0] = i;
+                xor_strings(NEWSTRING, STRING3, SINGLECHAR);
+                long f;
+                for(l=0; l < 26; l++) {
+                        myscores[l] = 0;
+                        score[l] = 0;
+                }
+                letters_counted = 0;
+                points = 0;
+                for(f=0; f < str_length; f++) {
+                        if(NEWSTRING[f] == ' ') {
+                                printf("");
+                                points += 3;
+                                }
+                        if(NEWSTRING[f] >= 65 && NEWSTRING[f] <= 90) {
+                                points += 1;
+                                letters_counted++;
+                                score[NEWSTRING[f]-A]++;
+                        }
+                        else if(NEWSTRING[f] >= 97 &&  NEWSTRING[f] <= 97+25) {
+                                points += 1;
+                                letters_counted++;
+                                score[NEWSTRING[f]-a]++;
+                        }
+
+                }
+
+
+                float offset = 5;
+
+                for(l=0; l < 26; l++) {
+                        myscores[l] = score[l]/letters_counted;
+                        myscores[l] = 100 * myscores[l];
+                        if(letterscore[l]+offset <= myscores[l] && letterscore[l]+offset >= myscores[l]) {
+                                points += 10;
+                        }
+                }
+                points += letters_counted/5;
+                if(points > 32) {
+                        puts(NEWSTRING);
+                        for(l=0; l < 26; l++) {
+                                if(l % 6 == 0 && l != 0)
+                                        printf("\n");
+                                printf("%c %.2f\t", A+l, myscores[l]);
+                        }
+                        printf("\nPoints gained: %li \t\tLetters counted: %li\n\n", points, letters_counted);
+                }
+              
+        }
+
+        free(NEWSTRING);
+        free(STRING3);
+
+        //for(i=0; i < strlen(NEWSTRING); i++) {
+        //}
+                
         separate();
         /*
          * Challenge 5
@@ -74,5 +153,4 @@ int main()
         puts(xor_hexstring);
         free(xor_hexstring);
         free(xor_string2);
-        return 0;
 }

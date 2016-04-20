@@ -18,7 +18,7 @@ void buildHexTable()
                 if(i<10)
                         HEXTABLE[0][i] = zeroChar + i;
                 else
-                        HEXTABLE[0][i] = A + i;
+                        HEXTABLE[0][i] = 55 + i;
                 HEXTABLE[1][i] = zero + i;
         }
 }
@@ -68,6 +68,21 @@ void bitsToHexchar(char *output, char *input)
 
 }
 
+void hexstringToString(char *buffer, char *input)
+{
+        if(strlen(input) % 2 > 0) {
+                printf("Error - string length is odd. 2 hex needed to fill a byte!");
+                exit(-1);
+        }
+        int a = 0;
+        int i = 0;
+        while(input[a] != '\0') {
+                buffer[i] |= charTo4Bits(input[a], a);
+                a++;
+                if(a % 2 == 0 && a != 0) i++;
+        }
+        buffer[i] = '\0';
+}
 void hexstringToBytes(unsigned char *buffer, char *input)
 {
         if(strlen(input) % 2 > 0) {
@@ -203,23 +218,24 @@ void equal_xor_hexstrings(unsigned char* output, char *input1, char *input2, lon
 
 void xor_strings(char *output, char *input1, char *input2)
 {
-        long i1;
-        long i2;
         long c;
 
-        long longer = strlen(input1);
         long shorter = strlen(input2);
-        if(longer < shorter )
+        long longer = strlen(input1);
+        if(longer < shorter)
                 exit(-1);
+        char *temp = calloc(longer+1, 1);
 
         long shortcounter=0;
         for(c=0; c < longer; c++) {
-                output[c] = input1[c] ^ input2[shortcounter];
+                temp[c] = input1[c] ^ input2[shortcounter];
                 shortcounter++;
                 if(shortcounter >= shorter)
                         shortcounter = 0;
         }
-        output[longer] = '\0';
+        temp[longer] = '\0';
+        memcpy(output, temp, longer+1);
+        free(temp);
 
 }
 

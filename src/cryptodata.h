@@ -1,7 +1,8 @@
 char HEXTABLE[2][16];
 static const char *BASE64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 static const unsigned char zero = 0x00;
-static const unsigned char A = 55;
+static const char A = 65;
+static const unsigned char a = 97;
 static const unsigned char zeroChar = 48;
 
 char equalsign = '=';
