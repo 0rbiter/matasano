@@ -1,0 +1,1 @@
+latrace -A ./build/main 2>&1
