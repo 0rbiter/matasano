@@ -79,9 +79,6 @@ int main()
         free(NEWSTRING);
         free(STRING3);
 
-        //for(i=0; i < strlen(NEWSTRING); i++) {
-        //}
-                
         separate();
         /*
          * Challenge 5
