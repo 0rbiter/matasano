@@ -132,15 +132,15 @@ int main(int argc, char **argv)
                 print_en_scores();
                 for(k=0; k < 256; k++) {
                         ENCCHAR[0] = k;
-                        //TEMPSTRING = realloc(TEMPSTRING, strlen(stringlist[k])+1);
-                        //xor_strings(TEMPSTRING, stringlist[k], ENCCHAR);
-                        //get_score(NEWSTRING2, strlen(NEWSTRING2), ENCCHAR, 212, 3.0f);
+                        TEMPSTRING = realloc(TEMPSTRING, strlen(stringlist[k])+1);
+                        xor_strings(TEMPSTRING, stringlist[k], ENCCHAR);
+                        get_score(TEMPSTRING, strlen(TEMPSTRING), ENCCHAR, 200, 3.0f);
                       
                 }
         }
         long q;
-        for(q=1; q < linecount; q++) {
-                printf("%s", stringlist[q]);
+        for(q=0; q < linecount; q++) {
+                //printf("%s", stringlist[q]);
                 free(stringlist[q]);
         }
         
