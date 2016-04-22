@@ -15,7 +15,7 @@ long getFilesize(char *path)
         return sz;
 }
 
-int readFile(char *stringlist, char *path)
+int readFile(char ***stringlist, char *path)
 {
         FILE *filename;
         char *line = malloc(1);
@@ -29,10 +29,10 @@ int readFile(char *stringlist, char *path)
         long i = 0;
 
         while((linelength = getline(&line, &len, filename)) != -1) {
-                **stringlist = realloc(**stringlist, (i+1) * sizeof(char **));
-                (stringlist)[i] = (char *) calloc(linelength+1, 1);
-                (stringlist)[i] = line;
-                stringlist[i][linelength] = '\0';
+                *stringlist = realloc(*stringlist, (i+1) * sizeof(char **));
+                *stringlist[i] = (char *) calloc(linelength+1, 1);
+                memcpy(*stringlist[i], line, linelength);
+                *stringlist[i][linelength] = '\0';
                 i++;
         }
         /*

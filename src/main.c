@@ -126,7 +126,7 @@ int main(int argc, char **argv)
         char *TEMPSTRING = malloc(1);
         long linecount = 0;
 
-        if((linecount = readFile(&stringlist, stringlist, filename)) != -1) {
+        if((linecount = readFile(&stringlist, filename)) != -1) {
                 int k; 
                 print_en_scores();
                 for(k=0; k < 256; k++) {
