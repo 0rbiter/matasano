@@ -15,6 +15,14 @@ long b64length(char *pre_decode_STRING)
         return (long) strlen(pre_decode_STRING) / 6  * 4 + addition + 1;
 }
 
+long ownlen(char *input)
+{
+        long charc = 0;
+        while(input[charc] != '\0' &&  input[charc] != '\n') {
+                charc++;
+        }
+        return charc;
+}
 
 void buildHexTable()
 {
@@ -75,13 +83,13 @@ void bitsToHexchar(char *output, char *input)
 
 void hexstringToString(char *buffer, char *input)
 {
-        if(strlen(input) % 2 > 0) {
+        if(ownlen(input) % 2 > 0) {
                 printf("Error - string length is odd. 2 hex needed to fill a byte!");
                 exit(-1);
         }
         int a = 0;
         int i = 0;
-        while(input[a] != '\0') {
+        while(input[a] != '\0' && input[a] != '\n') {
                 buffer[i] |= charTo4Bits(input[a], a);
                 a++;
                 if(a % 2 == 0 && a != 0) i++;
@@ -223,10 +231,10 @@ void equal_xor_hexstrings(unsigned char* output, char *input1, char *input2, lon
 
 void xor_strings(char *output, char *input1, char *input2)
 {
-        long c;
+        long c, longer, shorter;
+        longer = ownlen(input1);
+        shorter = ownlen(input2);
 
-        long shorter = strlen(input2);
-        long longer = strlen(input1);
         if(longer < shorter)
                 exit(-1);
         char *temp = calloc(longer+1, 1);

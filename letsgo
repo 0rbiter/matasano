@@ -1,3 +1,5 @@
 #/bin/bash
-vim -p src/main.c src/filehandler.h src/cryptodef.h src/scoring.h src/cryptodata.h
+#vim -p src/main.c src/scoring.h
+vim -p src/main.c src/cryptodef.h src/scoring.h
+#vim -p src/main.c src/filehandler.h src/cryptodef.h src/scoring.h src/cryptodata.h
 

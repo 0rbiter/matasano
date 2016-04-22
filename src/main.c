@@ -73,22 +73,22 @@ int main(int argc, char **argv)
         printf("\n");
         
         hexstringToString(STRING3, HEXSTRING3);
-       
-        long str_length = strlen(STRING3);
+        long str_length = ownlen(STRING3);
         char *NEWSTRING = calloc(str_length+1, 1);
 
         print_en_scores();
+
         for(i=0; i < 256; i++) {
                 SINGLECHAR[0] = i;
                 xor_strings(NEWSTRING, STRING3, SINGLECHAR);
-                get_score(NEWSTRING, strlen(NEWSTRING), SINGLECHAR, 212, 3.0f);
+                get_score(NEWSTRING, strlen(NEWSTRING), SINGLECHAR, 530, 3.0f, 0, 0);
               
         }
 
         free(NEWSTRING);
         free(STRING3);
-
         separate();
+        
         /*
          * Challenge 5
          */
@@ -122,28 +122,42 @@ int main(int argc, char **argv)
         printf("\n");
         char ENCCHAR[] = "A\0";
         char filename[] = "/home/orbiter/matasano/src/challenge4keys.txt";
-        //char **stringlist = (char **) malloc(1);
         char **stringlist = NULL;
-        char *TEMPSTRING = malloc(1);
+        char *STR_STRING = malloc(1);
+        unsigned char TMP_STRING[30]; // = malloc(1);
+        char *STR_XOR = malloc(1);
         long linecount = 0;
+        long SIZEOFSTRING = 0;
+        long charcounter = 0;
 
         if((linecount = readFile(&stringlist, filename)) != -1) {
-                int k; 
+                int k, ki; 
                 print_en_scores();
-                for(k=0; k < 256; k++) {
-                        ENCCHAR[0] = k;
-                        TEMPSTRING = realloc(TEMPSTRING, strlen(stringlist[k])+1);
-                        xor_strings(TEMPSTRING, stringlist[k], ENCCHAR);
-                        get_score(TEMPSTRING, strlen(TEMPSTRING), ENCCHAR, 200, 3.0f);
-                      
+                for(k=0; k < linecount; k++) {
+                        SIZEOFSTRING = ownlen(stringlist[k]);
+                        STR_STRING = realloc(STR_STRING, SIZEOFSTRING/2+1);
+                        STR_STRING[SIZEOFSTRING/2] = '\0';
+                        hexstringToString(STR_STRING, stringlist[k]);
+                        if(STR_STRING == NULL)
+                                exit(-1);
+                        
+                        STR_XOR = realloc(STR_XOR, SIZEOFSTRING/2+1);
+                        if(STR_XOR == NULL)
+                                exit(-1);
+                        STR_XOR[SIZEOFSTRING/2] = '\0';
+
+                        for(charcounter=0; charcounter < 256; charcounter++) {
+                                ENCCHAR[0] = charcounter;
+                                xor_strings(STR_XOR, STR_STRING, ENCCHAR);
+                                //get_score(STR_XOR, SIZEOFSTRING/2, ENCCHAR, 400, 9.0f, 0, 1);
+                        }
                 }
         }
         long q;
-        for(q=0; q < linecount; q++) {
-                //printf("%s", stringlist[q]);
+        for(q=0; q < linecount+1; q++) {
                 free(stringlist[q]);
         }
-        
         free(stringlist);
-        free(TEMPSTRING);
+        free(STR_STRING);
+        free(STR_XOR);
 }

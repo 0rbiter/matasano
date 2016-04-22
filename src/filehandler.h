@@ -30,21 +30,17 @@ int readFile(char ***stringlist, char *path)
 
         while((linelength = getline(&line, &len, filename)) != -1) {
                 *stringlist = realloc(*stringlist, (i+1) * sizeof(char **));
-                (*stringlist)[i] = (char *) calloc(linelength+1, sizeof(char *));
+                if(*stringlist == NULL)
+                        exit(-1);
+                (*stringlist)[i] = (char *) calloc(linelength, sizeof(char *));
                 memcpy((*stringlist)[i], line, linelength);
-                (*stringlist)[i][linelength] = '\0';
                 i++;
         }
-        /*
-        int q = 0;
-        for(q=0; q < i; q++) {
-                free(stringlist[q]);
-        }*/
         free(line);
 
         fclose(filename);
 
-        return i;
+        return i-1;
 }
 
 #endif /* !FILEHANDLER_H */
