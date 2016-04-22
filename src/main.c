@@ -122,7 +122,8 @@ int main(int argc, char **argv)
         printf("\n");
         char ENCCHAR[] = "A\0";
         char filename[] = "/home/orbiter/matasano/src/challenge4keys.txt";
-        char **stringlist = (char **) malloc(1);
+        //char **stringlist = (char **) malloc(1);
+        char **stringlist = NULL;
         char *TEMPSTRING = malloc(1);
         long linecount = 0;
 
@@ -140,9 +141,9 @@ int main(int argc, char **argv)
         long q;
         for(q=1; q < linecount; q++) {
                 printf("%s", stringlist[q]);
-                //free(stringlist[q]);
+                free(stringlist[q]);
         }
-        /*
+        
         free(stringlist);
-        free(TEMPSTRING);*/
+        free(TEMPSTRING);
 }

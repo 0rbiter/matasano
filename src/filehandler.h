@@ -30,9 +30,9 @@ int readFile(char ***stringlist, char *path)
 
         while((linelength = getline(&line, &len, filename)) != -1) {
                 *stringlist = realloc(*stringlist, (i+1) * sizeof(char **));
-                *stringlist[i] = (char *) calloc(linelength+1, 1);
-                memcpy(*stringlist[i], line, linelength);
-                *stringlist[i][linelength] = '\0';
+                (*stringlist)[i] = (char *) calloc(linelength+1, sizeof(char *));
+                memcpy((*stringlist)[i], line, linelength);
+                (*stringlist)[i][linelength] = '\0';
                 i++;
         }
         /*
