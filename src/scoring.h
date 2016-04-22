@@ -31,7 +31,7 @@ int get_score(char *input_string, long str_length, char *key, int delimiter, flo
         points = 0;
         for(f=0; f < str_length; f++) {
                 if(input_string[f] == ' ') {
-                        points += 4;
+                        points += 3;
                         }
                 if(input_string[f] >= 65 && input_string[f] <= 90) {
                         points += 6;
@@ -46,19 +46,15 @@ int get_score(char *input_string, long str_length, char *key, int delimiter, flo
 
         }
 
-        float sum = 0;
         for(l=0; l < 26; l++) {
                 myscores[l] = score[l]/letters_counted;
                 myscores[l] = 100 * myscores[l];
-                sum += myscores[l];
                 if(letterscore_en[l]-offset <= myscores[l] ^ letterscore_en[l]+offset <= myscores[l]) {
-                        points += 10;
+                        points += 20;
                 }
-                if(myscores[l] > 35 && repetition_penalty == 1)
-                        points -=400;
+                if(myscores[l] > 80 && repetition_penalty == 1)
+                        points -=350;
         }
-        if(sum >= 80)
-                points += sum;
 
         points += letters_counted*3;
         if(points > delimiter) {
@@ -70,9 +66,9 @@ int get_score(char *input_string, long str_length, char *key, int delimiter, flo
                                 printf("%c %.2f\t", 65+l, myscores[l]);
                         }
                 }
-                printf("\n\t\t\t\t\t\tPoints gained: %li \tLetters counted: %li\tKey: ", points, letters_counted);
+                printf("\n\t\t\tPoints gained: %li \tLetters counted: %li\tKey: ", points, letters_counted);
                 fputs(key, stdout);
-                printf("%i\n\n\n", key[0]);
+                printf("/%i\n\n", key[0]);
         }
         return points;
 }

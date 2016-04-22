@@ -81,7 +81,7 @@ int main(int argc, char **argv)
         for(i=0; i < 256; i++) {
                 SINGLECHAR[0] = i;
                 xor_strings(NEWSTRING, STRING3, SINGLECHAR);
-                get_score(NEWSTRING, strlen(NEWSTRING), SINGLECHAR, 530, 3.0f, 0, 0);
+                get_score(NEWSTRING, strlen(NEWSTRING), SINGLECHAR, 600, 3.0f, 0, 0);
               
         }
 
@@ -118,14 +118,13 @@ int main(int argc, char **argv)
          * use xor encryption and try different chars, run them through scoring
          * profit!
          * */
-        printf("Challenge 5\nread 60 keys from file and find the encryption character\nand the according line");
+        printf("Challenge 4\nread 60 keys from file and find the encryption character\nand the according line");
         printf("\n");
         char ENCCHAR[] = "A\0";
         char filename[] = "/home/orbiter/matasano/src/challenge4keys.txt";
-        char **stringlist = NULL;
-        char *STR_STRING = malloc(1);
-        unsigned char TMP_STRING[30]; // = malloc(1);
-        char *STR_XOR = malloc(1);
+        char **stringlist = malloc(sizeof(char));
+        char *STR_STRING = malloc(31);
+        char *STR_XOR = malloc(31);
         long linecount = 0;
         long SIZEOFSTRING = 0;
         long charcounter = 0;
@@ -133,8 +132,9 @@ int main(int argc, char **argv)
         if((linecount = readFile(&stringlist, filename)) != -1) {
                 int k, ki; 
                 print_en_scores();
-                for(k=0; k < linecount; k++) {
+                for(k=0; k < linecount; k++) { 
                         SIZEOFSTRING = ownlen(stringlist[k]);
+                        //stringToUpper(stringlist[k]);
                         STR_STRING = realloc(STR_STRING, SIZEOFSTRING/2+1);
                         STR_STRING[SIZEOFSTRING/2] = '\0';
                         hexstringToString(STR_STRING, stringlist[k]);
@@ -142,14 +142,17 @@ int main(int argc, char **argv)
                                 exit(-1);
                         
                         STR_XOR = realloc(STR_XOR, SIZEOFSTRING/2+1);
+                        STR_XOR = calloc(SIZEOFSTRING/2+1, 1);
+                        memset(STR_XOR, 0, sizeof(*STR_XOR));
                         if(STR_XOR == NULL)
                                 exit(-1);
                         STR_XOR[SIZEOFSTRING/2] = '\0';
 
                         for(charcounter=0; charcounter < 256; charcounter++) {
                                 ENCCHAR[0] = charcounter;
-                                xor_strings(STR_XOR, STR_STRING, ENCCHAR);
-                                //get_score(STR_XOR, SIZEOFSTRING/2, ENCCHAR, 400, 9.0f, 0, 1);
+                                memset(STR_XOR, 0, sizeof(*STR_XOR));
+                                xor_bytes(STR_XOR, STR_STRING, SIZEOFSTRING/2, ENCCHAR, 1);
+                                get_score(STR_XOR, SIZEOFSTRING/2, ENCCHAR, 500, 6.0f, 0, 1);
                         }
                 }
         }

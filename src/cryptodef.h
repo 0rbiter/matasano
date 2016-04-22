@@ -7,6 +7,21 @@
 #ifndef CRYPTODEF_H
 #define CRYPTODEF_H
 
+void stringToUpper(char *buffer)
+{
+        while(*buffer)
+        {
+                *buffer = toupper(*buffer);
+                buffer++;
+        }
+        /*long cnt = 0;
+        while(buffer[cnt] != '\0' && buffer[cnt] != '\n') {
+                if(islower(buffer[cnt]))
+                        buffer[cnt] = toupper(buffer[cnt]);
+
+        }*/
+}
+
 long b64length(char *pre_decode_STRING)
 {
         int addition = 0;
@@ -226,6 +241,27 @@ void equal_xor_hexstrings(unsigned char* output, char *input1, char *input2, lon
                 output[c] = bytes_input1[c] ^ bytes_input2[c];
         free(bytes_input1);
         free(bytes_input2);
+}
+
+
+void xor_bytes(char *output, char *input1, long longer, char *input2, long shorter)
+{
+        long c;
+
+        if(longer < shorter)
+                exit(-1);
+        char *temp = calloc(longer+1, 1);
+
+        long shortcounter=0;
+        for(c=0; c < longer; c++) {
+                temp[c] = input1[c] ^ input2[shortcounter];
+                shortcounter++;
+                if(shortcounter >= shorter)
+                        shortcounter = 0;
+        }
+        temp[longer] = '\0';
+        memcpy(output, temp, longer+1);
+        free(temp);
 
 }
 
