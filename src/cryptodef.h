@@ -1,7 +1,12 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#ifndef STANDARD_LIBS
+#define STANDARD_LIBS
+#include "headerfiles.h"
+#endif
+
+/* cryptodef.h */
+#ifndef CRYPTODEF_H
+#define CRYPTODEF_H
+
 long b64length(char *pre_decode_STRING)
 {
         int addition = 0;
@@ -264,3 +269,4 @@ void xor_hexstrings(char *output, char *input1, char *input2)
 
 }
 
+#endif /* !CRYPTODEF_H */

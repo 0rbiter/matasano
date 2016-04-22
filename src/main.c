@@ -1,4 +1,9 @@
-//#include "crypto.h"
+#ifndef STANDARD_LIBS
+#define STANDARD_LIBS
+#include "headerfiles.h"
+#endif
+
+#include "filehandler.h"
 #include "cryptodata.h"
 #include "cryptodef.h"
 #include "scoring.h"
@@ -8,8 +13,12 @@ void separate()
         puts("\n\n###############################################################################");
 }
 
-int main()
+int main(int argc, char **argv)
 {
+
+
+
+        separate();
         /*
          * convert from string to hex/bytes and Base 64 decode it
          * */
@@ -102,4 +111,38 @@ int main()
 
         free(xor_hexstring);
         free(xor_string2);
+        
+        separate();
+        /*
+         * read all keys from ../src/challenge4keys.txt and put them in strings
+         * use xor encryption and try different chars, run them through scoring
+         * profit!
+         * */
+        printf("Challenge 5\nread 60 keys from file and find the encryption character\nand the according line");
+        printf("\n");
+        char ENCCHAR[] = "A\0";
+        char filename[] = "/home/orbiter/matasano/src/challenge4keys.txt";
+        char **stringlist = (char **) malloc(1);
+        char *TEMPSTRING = malloc(1);
+        long linecount = 0;
+
+        if((linecount = readFile(&stringlist, stringlist, filename)) != -1) {
+                int k; 
+                print_en_scores();
+                for(k=0; k < 256; k++) {
+                        ENCCHAR[0] = k;
+                        //TEMPSTRING = realloc(TEMPSTRING, strlen(stringlist[k])+1);
+                        //xor_strings(TEMPSTRING, stringlist[k], ENCCHAR);
+                        //get_score(NEWSTRING2, strlen(NEWSTRING2), ENCCHAR, 212, 3.0f);
+                      
+                }
+        }
+        long q;
+        for(q=1; q < linecount; q++) {
+                printf("%s", stringlist[q]);
+                //free(stringlist[q]);
+        }
+        /*
+        free(stringlist);
+        free(TEMPSTRING);*/
 }
