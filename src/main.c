@@ -46,6 +46,7 @@ int file_o_destroy(struct file_o *obj)
         while(obj->length[i] != -1) {
                 free(obj->buffer.i[i++]);
         }
+        free(obj->buffer.i);
         free(obj->length);
         free(obj);
         return 0;
@@ -185,7 +186,7 @@ int main(int argc, char **argv)
         int j = file_o_init(buffer1);
         for(lines = 0; lines < buffer1->elements; lines++) {
                 printf("%li  ", buffer1->length[lines]);
-                //puts(buffer1->buffer.c[lines]);
+                puts(buffer1->buffer.c[lines]);
         }
         printf("\n%i", j);
         file_o_destroy(buffer1);
