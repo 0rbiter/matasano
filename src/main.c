@@ -12,19 +12,13 @@
 void s1c1();
 void s1c2();
 void s1c5();
-/*
-typedef union {
-        unsigned char ui;
-        char c;
-        int i;
-} _single;
 
 typedef union {
         unsigned char *ui;
         char *c;
         int *i;
 } _line;
-*/
+
 typedef union {
         unsigned char **ui;
         char **c;
@@ -48,11 +42,10 @@ int file_o_init(struct file_o *obj)
 }
 int file_o_destroy(struct file_o *obj)
 {
-        if(obj->length == NULL || obj->buffer.ui == NULL)
-                return 1;
         long i = 0;
-        while(obj->length[i] != -1)
-                free(obj->buffer.ui[i++]);
+        while(obj->length[i] != -1) {
+                free(obj->buffer.i[i++]);
+        }
         free(obj->length);
         free(obj);
         return 0;
@@ -191,8 +184,8 @@ int main(int argc, char **argv)
         struct file_o *buffer1 = readBytes(filename);
         int j = file_o_init(buffer1);
         for(lines = 0; lines < buffer1->elements; lines++) {
-                printf("%li\n", buffer1->length[lines]);
-                puts(buffer1->buffer.c[lines]);
+                printf("%li  ", buffer1->length[lines]);
+                //puts(buffer1->buffer.c[lines]);
         }
         printf("\n%i", j);
         file_o_destroy(buffer1);
