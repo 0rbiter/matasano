@@ -17,79 +17,77 @@ void s1c5();
 
 long readBytes(unsigned char **buffer, char *filename)
 {
+        FILE *fp = fopen(filename, "r");
+        if(!fp)
+                exit(-1);
+        unsigned int buf_element;
+        long counter;
+
         long vertical = 0;
         long horizontal = 0;
-        
-        long y;
-        long x;
+        unsigned char **new_buffer = NULL;
+        unsigned char *new_line = NULL;
 
         buffer = (unsigned char **) malloc(1 * sizeof(unsigned char *));
         buffer[vertical] = (unsigned char *) malloc(1 * sizeof(unsigned char));
         buffer[vertical][horizontal] = 0;
+        if(buffer[0] == NULL)
+                exit(-1);
         if(buffer == NULL)
                 exit(-1);
-
-        unsigned char **new_buffer = NULL;
-        unsigned char *new_line = NULL;
-       /* 
-        unsigned char **old_lines = NULL;
-        old_lines = (unsigned char **) malloc(1 * sizeof(unsigned char *));
-        old_lines = (unsigned char *) malloc(1 * sizeof(unsigned char));
-                        // backup buffer addresses
-                        old_lines = (unsigned char **) malloc(vertical * sizeof(unsigned char *));
-                        old_lines = (unsigned char *) malloc(1 * sizeof(unsigned char));
-                        for(y = 0; y < vertical; y++)
-                                for(x = 0; x < horizontal; x++)
-                                        old_lines[x] = buffer[vertical][horizontal];
-*/
-
-        FILE *fp = fopen(filename, "r");
-        if(!fp)
+        long *new_lll = NULL;
+        long *linelengthlist = NULL;
+        new_lll = (long *) malloc(1*sizeof(long));
+        if(new_lll == NULL)
                 exit(-1);
-
-        unsigned int buf_element;
-        long counter;
-
-        while((buf_element = fgetc(fp)) != EOF){
-                printf("Starting %li * %li\n", vertical, horizontal); 
-                // condition for horizontal realloc (new char element)
-                new_line = (unsigned char *) realloc(buffer, horizontal*sizeof(unsigned char));
-                if(buffer == NULL)
+        else
+                linelengthlist = new_lll;
+        linelengthlist[0] = 0;
+        while((buf_element = fgetc(fp)) != EOF) {
+                buffer[vertical][horizontal] = buf_element;
+                //printf("\n\tY:\t %ld \tX:\t %ld \tData:\t %c", vertical, horizontal, buf_element);
+                // condition for vertical realloc (new list element)
+                if(buffer[vertical][horizontal] == '\0' || buffer[vertical][horizontal] == '\n') {
+                        // allocate vertical (# of elements in address list)
+                        new_buffer = (unsigned char **) realloc(buffer, (vertical+2)*sizeof(unsigned char*));
+                        if(new_buffer == NULL)
+                                exit(-1);
+                        else {
+                                buffer = new_buffer;
+                                new_lll = (long *) realloc(linelengthlist, (vertical+2)*sizeof(long));
+                                if(new_lll == NULL)
+                                        exit(-1);
+                                else {
+                                        linelengthlist = new_lll;
+                                        horizontal = -1;
+                                        vertical++;
+                                        buffer[vertical] = NULL;
+                                }
+                        }
+                }
+                // create space for a new char
+                // will be buffer increments later on!
+                new_line = (unsigned char *) realloc(buffer[vertical], (horizontal+2)*sizeof(unsigned char));
+                if(new_line == NULL)
                         exit(-1);
-                else
-                        horizontal++;
+                else {
                         buffer[vertical] = new_line;
-                        
+                        linelengthlist[vertical] = horizontal;
+                        horizontal++;
+                }
                 if(ferror(fp) != 0)
                         clearerr(fp);
-                
-                // condition for vertical realloc (new list element)
-                if((buffer[vertical][horizontal] == '\0' || buffer[vertical][horizontal] == '\n')
-                        && vertical != 0 && horizontal != 0) {
-                        // allocate vertical (# of elements in address list)
-                        
-                        new_buffer = (unsigned char **) realloc(buffer, vertical*sizeof(unsigned char *));
-                        if(buffer == NULL)
-                                exit(-1);
-                        else
-                                vertical++; 
-                                buffer = new_buffer;
-                }
-                
-                buffer[vertical][horizontal] = buf_element;
-
-
         }
-
+        long y;
+        long x;
+        for(y = 0; y <= vertical; y++) {
+                free(buffer[y]);
+        }
+        free(buffer);
+        free(new_lll);
         if(!fclose(fp))
                 exit(-1);
-
-        for(y = 0; y < vertical; y++)
-                free(new_buffer[vertical]);
-        free(buffer);
-
-        return vertical*horizontal;
-
+        return 0;
 }
 
 int main(int argc, char **argv)
