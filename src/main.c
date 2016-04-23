@@ -3,66 +3,92 @@
 #include "headerfiles.h"
 #endif
 
-#include "filehandler.h"
+#include "filehandler.c"
 #include "cryptodata.h"
-#include "cryptodef.h"
-#include "scoring.h"
+#include "cryptodef.c"
+#include "scoring.c"
 #include "set1.c"
 
 void s1c1();
 void s1c2();
 void s1c5();
 
-long readBytes(unsigned char **bufindex, char *filename)
+
+
+long readBytes(unsigned char **buffer, char *filename)
 {
-        long bufsize = 1024;
-        long prebuf = 8;
-        if(bufindex != NULL) {
-                bufindex = NULL;
-        }
-        bufindex = malloc(1);
-        *bufindex[0] = calloc(bufsize, sizeof(unsigned char));
-        unsigned char *tmp_adr;
-        unsigned char **tmp_ptr;;
-        long el_number = 1;
+        long vertical = 0;
+        long horizontal = 0;
+        
+        long y;
+        long x;
+
+        buffer = (unsigned char **) malloc(1 * sizeof(unsigned char *));
+        buffer[vertical] = (unsigned char *) malloc(1 * sizeof(unsigned char));
+        buffer[vertical][horizontal] = 0;
+        if(buffer == NULL)
+                exit(-1);
+
+        unsigned char **new_buffer = NULL;
+        unsigned char *new_line = NULL;
+       /* 
+        unsigned char **old_lines = NULL;
+        old_lines = (unsigned char **) malloc(1 * sizeof(unsigned char *));
+        old_lines = (unsigned char *) malloc(1 * sizeof(unsigned char));
+                        // backup buffer addresses
+                        old_lines = (unsigned char **) malloc(vertical * sizeof(unsigned char *));
+                        old_lines = (unsigned char *) malloc(1 * sizeof(unsigned char));
+                        for(y = 0; y < vertical; y++)
+                                for(x = 0; x < horizontal; x++)
+                                        old_lines[x] = buffer[vertical][horizontal];
+*/
 
         FILE *fp = fopen(filename, "r");
         if(!fp)
                 exit(-1);
 
-        unsigned int buf;
-        do {
-                if(bufsize+1 % prebuf == prebuf) {
-       
-                        printf("Jetzt!");
-                        tmp_ptr = realloc(bufindex, el_number);
-                        if(tmp_ptr == NULL)
-                                continue;
-                        else {
-                                bufindex = tmp_ptr;
-                                el_number++;
-                        }
+        unsigned int buf_element;
+        long counter;
 
-                        tmp_adr = realloc(bufindex, bufsize+prebuf);
-                        if(tmp_adr == NULL)
-                                continue;
-                        else
-                                *bufindex = tmp_adr;
+        while((buf_element = fgetc(fp)) != EOF){
+                printf("Starting %li * %li\n", vertical, horizontal); 
+                // condition for horizontal realloc (new char element)
+                new_line = (unsigned char *) realloc(buffer, horizontal*sizeof(unsigned char));
+                if(buffer == NULL)
+                        exit(-1);
+                else
+                        horizontal++;
+                        buffer[vertical] = new_line;
                         
-                }
                 if(ferror(fp) != 0)
                         clearerr(fp);
-                bufsize++;
-                *bufindex[bufsize-prebuf] = buf;
-        } while((buf = fgetc(fp)) != EOF);
+                
+                // condition for vertical realloc (new list element)
+                if((buffer[vertical][horizontal] == '\0' || buffer[vertical][horizontal] == '\n')
+                        && vertical != 0 && horizontal != 0) {
+                        // allocate vertical (# of elements in address list)
+                        
+                        new_buffer = (unsigned char **) realloc(buffer, vertical*sizeof(unsigned char *));
+                        if(buffer == NULL)
+                                exit(-1);
+                        else
+                                vertical++; 
+                                buffer = new_buffer;
+                }
+                
+                buffer[vertical][horizontal] = buf_element;
+
+
+        }
 
         if(!fclose(fp))
                 exit(-1);
-        free(tmp_ptr);
-        free(tmp_adr);
-        free(bufindex);
-        free(*bufindex);
-        return bufsize; 
+
+        for(y = 0; y < vertical; y++)
+                free(new_buffer[vertical]);
+        free(buffer);
+
+        return vertical*horizontal;
 
 }
 
