@@ -12,10 +12,53 @@
 void s1c1();
 void s1c2();
 void s1c5();
+/*
+typedef union {
+        unsigned char ui;
+        char c;
+        int i;
+} _single;
 
+typedef union {
+        unsigned char *ui;
+        char *c;
+        int *i;
+} _line;
+*/
+typedef union {
+        unsigned char **ui;
+        char **c;
+        int **i;
+} _chunk;
 
+struct file_o {
+        long *length; // list of lengths per line; last element is value of -1
+        _chunk buffer;
+        long elements; // not used?
+};
 
-long readBytes(unsigned char **buffer, char *filename)
+int file_o_init(struct file_o *obj)
+{
+        if(obj->length == NULL || obj->buffer.ui == NULL)
+                return 1;
+        obj->elements = 0;
+        while(obj->length[obj->elements++] >= 0);
+        obj->elements--;
+        return 0;
+}
+int file_o_destroy(struct file_o *obj)
+{
+        if(obj->length == NULL || obj->buffer.ui == NULL)
+                return 1;
+        long i = 0;
+        while(obj->length[i] != -1)
+                free(obj->buffer.ui[i++]);
+        free(obj->length);
+        free(obj);
+        return 0;
+}
+
+struct file_o *readBytes(char *filename)
 {
         FILE *fp = fopen(filename, "r");
         if(!fp)
@@ -28,6 +71,7 @@ long readBytes(unsigned char **buffer, char *filename)
         unsigned char **new_buffer = NULL;
         unsigned char *new_line = NULL;
 
+        unsigned char **buffer = NULL; 
         buffer = (unsigned char **) malloc(1 * sizeof(unsigned char *));
         buffer[vertical] = (unsigned char *) malloc(1 * sizeof(unsigned char));
         buffer[vertical][horizontal] = 0;
@@ -45,9 +89,9 @@ long readBytes(unsigned char **buffer, char *filename)
         linelengthlist[0] = 0;
         while((buf_element = fgetc(fp)) != EOF) {
                 buffer[vertical][horizontal] = buf_element;
-                //printf("\n\tY:\t %ld \tX:\t %ld \tData:\t %c", vertical, horizontal, buf_element);
                 // condition for vertical realloc (new list element)
                 if(buffer[vertical][horizontal] == '\0' || buffer[vertical][horizontal] == '\n') {
+                        buffer[vertical][horizontal] = '\0';
                         // allocate vertical (# of elements in address list)
                         new_buffer = (unsigned char **) realloc(buffer, (vertical+2)*sizeof(unsigned char*));
                         if(new_buffer == NULL)
@@ -80,14 +124,19 @@ long readBytes(unsigned char **buffer, char *filename)
         }
         long y;
         long x;
-        for(y = 0; y <= vertical; y++) {
-                free(buffer[y]);
+        free(buffer[vertical]);
+        struct file_o *result = (struct file_o *) malloc(sizeof(struct file_o));
+        result->length = linelengthlist;
+        result->buffer.ui = buffer;
+        for(y = 0; y < vertical; y++) {
+                result->buffer.ui[y] = buffer[y];
+                for(x = 0; x <= linelengthlist[y]; x++) {
+                        result->buffer.ui[y][x] = buffer[y][x];
+                }
         }
-        free(buffer);
-        free(new_lll);
-        if(!fclose(fp))
+        if(fclose(fp) != 0)
                 exit(-1);
-        return 0;
+        return result;
 }
 
 int main(int argc, char **argv)
@@ -123,7 +172,6 @@ int main(int argc, char **argv)
         free(NEWSTRING);
         free(STRING3);
         separate();
-        
         /*
          * read all keys from ../src/challenge4keys.txt and put them in strings
          * use xor encryption and try different chars, run them through scoring
@@ -133,31 +181,22 @@ int main(int argc, char **argv)
         printf("\n");
         char ENCCHAR[] = "A\0";
         char filename[] = "/home/orbiter/matasano/src/challenge4keys.txt";
-        unsigned char **stringlist = NULL; 
         char *STR_STRING = NULL;
         char *STR_XOR = NULL;
-        char TEST1[100] = "";
-        long linecount = 0;
+        long lines = 0;
+        long chars = 0;
         long SIZEOFSTRING = 0;
         long charcounter = 0;
 
-        readBytes(stringlist, filename);
-
-/*
-        if((linecount = readFile(&stringlist, filename)) != -1) {
-                int k; 
-                print_en_scores();
-                for(k=0; k < linecount; k++) { 
-                        SIZEOFSTRING = ownlen(stringlist[k]);
-                }
+        struct file_o *buffer1 = readBytes(filename);
+        int j = file_o_init(buffer1);
+        for(lines = 0; lines < buffer1->elements; lines++) {
+                printf("%li\n", buffer1->length[lines]);
+                puts(buffer1->buffer.c[lines]);
         }
-        long q;
-        for(q=0; q < linecount+1; q++) {
-                free(stringlist[q]);
-        }
-        free(stringlist);
+        printf("\n%i", j);
+        file_o_destroy(buffer1);
         free(STR_STRING);
         free(STR_XOR); 
-        */
 }
 
