@@ -15,6 +15,7 @@ long getFilesize(char *path)
         return sz;
 }
 
+
 int readFile(char ***stringlist, char *path)
 {
         FILE *filename;

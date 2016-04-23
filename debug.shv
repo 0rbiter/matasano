@@ -1,1 +1,1 @@
-make clean && make all && clear && valgrind -v --leak-check=full --track-origins=yes --tool=memcheck ./build/main
+make clean && make all && clear && valgrind --track-origins=yes ./build/main

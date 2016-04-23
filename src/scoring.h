@@ -29,20 +29,41 @@ int get_score(char *input_string, long str_length, char *key, int delimiter, flo
         }
         letters_counted = 0;
         points = 0;
+        unsigned char_repr = 0;
         for(f=0; f < str_length; f++) {
-                if(input_string[f] == ' ') {
-                        points += 3;
-                        }
-                if(input_string[f] >= 65 && input_string[f] <= 90) {
+
+                char_repr = input_string[f];
+                if((char_repr >= 65) && (char_repr <= 90)) {
                         points += 6;
                         letters_counted++;
-                        score[input_string[f]-65]++;
+                        score[char_repr-65]++;
                 }
-                else if(input_string[f] >= 97 &&  input_string[f] <= 97+25) {
+                else if((char_repr >= 97) &&  (char_repr <= (97+25))) {
                         points += 6;
                         letters_counted++;
-                        score[input_string[f]-97]++;
+                        score[char_repr-97]++;
                 }
+                switch(char_repr) {
+                        case ' ':
+                                points += 3;
+                        case '*':
+                        case '\n':
+                        case '%':
+                        case '$':
+                        case '!':
+                        case '&':
+                        case '(':
+                        case ')':
+                        case '?':
+                        case '"':
+                        case '@':
+                        case '/':
+                        case '\\':
+                                points += 0;
+                        default:
+                                points -= 50;
+                }
+
 
         }
 
@@ -50,10 +71,10 @@ int get_score(char *input_string, long str_length, char *key, int delimiter, flo
                 myscores[l] = score[l]/letters_counted;
                 myscores[l] = 100 * myscores[l];
                 if(letterscore_en[l]-offset <= myscores[l] ^ letterscore_en[l]+offset <= myscores[l]) {
-                        points += 20;
+                        points += 50;
                 }
-                if(myscores[l] > 80 && repetition_penalty == 1)
-                        points -=350;
+                if(myscores[l] > 75 && repetition_penalty == 1)
+                       points -=350;
         }
 
         points += letters_counted*3;
