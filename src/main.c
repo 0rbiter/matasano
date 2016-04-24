@@ -13,7 +13,6 @@ void s1c1();
 void s1c2();
 void s1c5();
 
-
 int main(int argc, char **argv)
 {
         separate();
@@ -21,29 +20,29 @@ int main(int argc, char **argv)
          * Challenge 3, XOR 2 HEX values with different length from input strings,
          * and print HEX string
          */
-        //char HEXSTRING3[] = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736\0";
-        char HEXSTRING3[] = "7b5a4215415d544115415d5015455447414c155c46155f4058455c5b523f\0";
+        char HEXSTRING3[] = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736\0";
+        //char HEXSTRING3[] = "7b5a4215415d544115415d5015455447414c155c46155f4058455c5b523f\0";
         char *STRING3 = calloc(strlen(HEXSTRING3)/2+1, 1);
         char SINGLECHAR[] = "A\0";
         int i, c;
         printf("Challenge 3\nfind the single byte to decrypt:\n");
         puts(HEXSTRING3);
         printf("\n");
-        
+        printf("Vor hexconvert: %li\n", strlen(HEXSTRING3));
         hexstringToString(STRING3, HEXSTRING3);
-        puts(STRING3);
+        printf("Nach hexconvert: %li\n", strlen(STRING3));
         long str_length = ownlen(STRING3);
+        printf("ownlen: %li\n", str_length);
         char *NEWSTRING = calloc(str_length+1, 1);
-
-        print_en_scores();
-
-        for(i=53; i < 54; i++) {
+        for(i=0; i < 54; i++) {
                 SINGLECHAR[0] = i;
-                xor_strings(NEWSTRING, STRING3, SINGLECHAR);
-                get_score(NEWSTRING, strlen(NEWSTRING), SINGLECHAR, -330, 3.0f, 0, 0);
-              
+                xor_bytes(NEWSTRING, STRING3, strlen(STRING3), SINGLECHAR, 3);
+                printf("%i - XOR length: %li\n", i, strlen(STRING3));
+                //printf("%i - XOR ownlen: %li\n", i, ownlen(NEWSTRING));
+                get_score(NEWSTRING, strlen(STRING3), SINGLECHAR, 50, 5.0f, 0, 1);
         }
-
+        //puts(get_best());
+        destroy_scores();
         free(NEWSTRING);
         free(STRING3);
         separate();
@@ -66,8 +65,8 @@ int main(int argc, char **argv)
         struct file_o *buffer1 = readBytes(filename);
         file_o_init(buffer1);
         for(lines = 0; lines < buffer1->elements; lines++) {
-                printf("%li  ", buffer1->length[lines]);
-                puts(buffer1->buffer.c[lines]);
+                //printf("%li  ", buffer1->length[lines]);
+                //puts(buffer1->buffer.c[lines]);
         }
         file_o_destroy(buffer1);
         free(STR_STRING);

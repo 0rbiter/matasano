@@ -7,6 +7,14 @@
 #ifndef CRYPTODEF_H
 #define CRYPTODEF_H
 
+int isTerminated(char *string, long length)
+{
+        if(string[length] == '\0')
+                return 1;
+        else
+                return 0;
+}
+
 void stringToUpper(char *buffer)
 {
         while(*buffer)
@@ -14,12 +22,6 @@ void stringToUpper(char *buffer)
                 *buffer = toupper(*buffer);
                 buffer++;
         }
-        /*long cnt = 0;
-        while(buffer[cnt] != '\0' && buffer[cnt] != '\n') {
-                if(islower(buffer[cnt]))
-                        buffer[cnt] = toupper(buffer[cnt]);
-
-        }*/
 }
 
 long b64length(char *pre_decode_STRING)
@@ -73,7 +75,6 @@ unsigned char charTo4Bits(char input, unsigned int leftorright)
         for(i=0; i<16; i++)
                 if(toupper(input) == HEXTABLE[0][i])
                         break;
-
         if(leftorright % 2 == 0)
                 return HEXTABLE[1][i] << 4;
         else
@@ -90,10 +91,8 @@ void bitsToHexchar(char *output, char *input)
                 o++;
                 output[o] = HEXTABLE[0][input[c] & 0x0F];
                 o++;
-
         }
         output[strlen(input)*2] = '\0';
-
 }
 
 void hexstringToString(char *buffer, char *input)
@@ -135,9 +134,7 @@ void bytesToB64(char *b64_string, unsigned char *buffer, long b64len, long buffe
                 outputlength += 4;
                 equalsigncount = inputlength % 6;
         }
-
         int i = 0;
-
         for(i=0; i<b64len; i++) {
                 b64_string[i] = BASE64[(buffer[0] >> 2)];
                 shiftArrayLeft(buffer, bufferlen, 6);
@@ -159,9 +156,7 @@ void b64_decode_string(char *output, char *input, long inputlength)
         xobject->b64_string = (char*) calloc(xobject->inputlength+1, 1);
         xobject->ascii_string = (unsigned char*) calloc(xobject->inputlength/4*3, 1);
         memcpy(xobject->b64_string, input, inputlength);
-        
         if(inputlength % 4 > 0) exit(0);
-        
         long b, a;
         for(b=0; b<inputlength; b++) {
                 a=0;
@@ -172,11 +167,9 @@ void b64_decode_string(char *output, char *input, long inputlength)
         }
         memcpy(output, xobject->ascii_string, inputlength/4*3);
         output[inputlength/4*3] = '\0';
-
         free(xobject->b64_string);
         free(xobject->ascii_string);
         free(xobject);
-
 }
 
 void hexstring_encode_bytes(unsigned char *output, char *input, long inputlength)
@@ -191,13 +184,9 @@ void hexstring_encode_bytes(unsigned char *output, char *input, long inputlength
         dobject->input = input;
         dobject->bytebuffer = (unsigned char*) calloc(dobject->inputlength/2, 1);
         //dobject->b64_string = (char*) calloc(b64length(dobject->input), 1);
-
-
         dobject->bytebuffer = realloc(dobject->bytebuffer, dobject->inputlength/2);
         hexstringToBytes(dobject->bytebuffer, dobject->input);
-
         memcpy(output, dobject->bytebuffer, inputlength/2);
-
         free(dobject->bytebuffer);
         free(dobject);
 }
@@ -255,6 +244,8 @@ void xor_bytes(char *output, char *input1, long longer, char *input2, long short
         long shortcounter=0;
         for(c=0; c < longer; c++) {
                 temp[c] = input1[c] ^ input2[shortcounter];
+                if(temp[c] == '\0')
+                        temp[c] = '_';
                 shortcounter++;
                 if(shortcounter >= shorter)
                         shortcounter = 0;

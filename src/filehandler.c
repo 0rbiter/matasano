@@ -2,8 +2,8 @@
 #ifndef FILEHANDLER_H
 #define FILEHANDLER_H
 
-static const long horizontal_bufsize = 64;
-static const long vertical_bufsize = 16;
+static long horizontal_bufsize = 64;
+static long vertical_bufsize = 512;
 
 typedef union {
         unsigned char *ui;
@@ -22,6 +22,14 @@ struct file_o {
         _chunk buffer;
         long elements; // not used?
 };
+
+void set_buffersize(long vertical, long horizontal)
+{
+        if(vertical != 0)
+                vertical_bufsize = vertical;
+        if(horizontal != 0)
+                horizontal_bufsize = horizontal;
+}
 
 int file_o_init(struct file_o *obj)
 {
