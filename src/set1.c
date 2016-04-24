@@ -17,19 +17,16 @@ void s1c1() {
          * convert from string to hex/bytes and Base 64 decode it
          * */
         char *HEXSTRING = "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d";
-
         printf("\nChallenge 1\nHexadecimal to convert to Base64:\n");
 	puts(HEXSTRING);
     	printf("\nSolution:\n");
         char *b64HS = (char*) calloc(b64length(HEXSTRING), 1);
         hexstring_encode_b64(b64HS, HEXSTRING, strlen(HEXSTRING));
         puts(b64HS);
-
         puts("Convert to ASCII:");
         char *decoded_string = calloc(strlen(b64HS)/4*3+1, 1);
         b64_decode_string(decoded_string, b64HS, strlen(b64HS));
         puts(decoded_string);
-
         free(decoded_string);
         free(b64HS);
 }
@@ -72,7 +69,7 @@ void s1c3()
         long str_length = hexstringToString(&STRING3, HEXSTRING3);
         char *NEWSTRING = malloc(1 * sizeof(char));
         for(i=0; i < 256; i++) {
-                SINGLECHAR[0] = i;
+                SINGLECHAR[0] = (char) i;
                 xor_bytes_to_string(&NEWSTRING, STRING3, str_length, SINGLECHAR, 1);
                 get_score(NEWSTRING, str_length, SINGLECHAR, -1000, 2.0f, 0);
         }
@@ -120,6 +117,7 @@ void s1c4()
 
 
 void s1c5() {
+        separate();
         /*
          * Challenge 5
          */

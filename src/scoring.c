@@ -81,17 +81,15 @@ void print_en_scores()
         printf("\n\n");
 }
 
-int get_score(char *input_string, long str_length, char *key, int delimiter, float offset, int prints)
+long get_score(char *input_string, long str_length, char *key, int delimiter, float offset, int prints)
 {
-        float score[26];
-        unsigned long letters_counted = 0;
+        float score[26] = { 0 };
+        long letters_counted = 0;
         long f;
         int l = 0;
         long points;
         points = 0;
-        float myscores[26];
-        for(l = 0; l < 26; l++)
-                myscores[l] = 0;
+        float myscores[26] = { 0 };
         char char_repr = 0;
         for(f=0; f <= str_length; f++) {
                 char_repr = input_string[f];
