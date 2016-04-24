@@ -4,6 +4,7 @@ static struct {
         long elements;
         long *length;
         long *score;
+        char **key;
         union {
                 char **text;
                 unsigned char **bytes;
@@ -15,15 +16,20 @@ static struct {
         .text = NULL,
 };
 
-void add_score(char *text, long length, long score) 
+void add_score(char *text, long length, char *key, long score) 
 {
         scores.length = realloc(scores.length, (scores.elements+1) * sizeof(long));
         scores.score = realloc(scores.score, (scores.elements+1) * sizeof(long));
         scores.text = realloc(scores.text, (scores.elements+1) * sizeof(char *));
+        scores.text[scores.elements] = malloc(1);
         scores.text[scores.elements] = realloc(scores.text[scores.elements], (length+1) * sizeof(char));
+        scores.key = realloc(scores.key, (scores.elements+1) * sizeof(char *));
+        scores.key[scores.elements] = malloc(1);
+        scores.key[scores.elements] = realloc(scores.key[scores.elements], 2 * sizeof(char));
         scores.length[scores.elements] = length;
         scores.score[scores.elements] = score;
         memcpy(scores.text[scores.elements], text, length+1);
+        memcpy(scores.key[scores.elements], key, 2);
         scores.elements++;
 }
 
@@ -32,26 +38,29 @@ void destroy_scores()
         long c;
         for(c = 0; c < scores.elements; c++) {
                 free(scores.text[c]);
+                free(scores.key[c]);
         }
         free(scores.text);
+        free(scores.key);
         free(scores.score);
         free(scores.length);
 }
 
-char *get_best()
+void get_best()
 {
         if(!scores.elements) {
                 printf("Error - no elements in score table\n");
-                return "Error\0";
         }
         long c;
         long highest = 0;
         long index = 0;
         for(c = 0; c < scores.elements; c++) {
-                if(scores.score[c] > highest)
+                if(scores.score[c] > highest) {
                         index = c;
+                        highest = scores.score[c];
+                }
         }
-        return scores.text[index];
+        printf("\nKey: %s - Text:\t%s", scores.key[index], scores.text[index]);
 }
 
 void print_en_scores()
@@ -145,7 +154,7 @@ int get_score(char *input_string, long str_length, char *key, int delimiter, flo
                         printf("\t%i\n", key[0]);
                 }
         }
-        add_score(input_string, str_length, points);
+        add_score(input_string, str_length, key, points);
         return points;
 }
 

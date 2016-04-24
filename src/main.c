@@ -21,7 +21,6 @@ int main(int argc, char **argv)
          * and print HEX string
          */
         char HEXSTRING3[] = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736\0";
-        //char HEXSTRING3[] = "7b5a4215415d544115415d5015455447414c155c46155f4058455c5b523f\0";
         char SINGLECHAR[] = "A\0";
         char *STRING3 = malloc(1 * sizeof(char));
         int i, c;
@@ -29,12 +28,12 @@ int main(int argc, char **argv)
         puts(HEXSTRING3);
         long str_length = hexstringToString(&STRING3, HEXSTRING3);
         char *NEWSTRING = malloc(1 * sizeof(char));
-        for(i=0; i < 54; i++) {
+        for(i=0; i < 256; i++) {
                 SINGLECHAR[0] = i;
-                xor_bytes_to_string(&NEWSTRING, STRING3, str_length, SINGLECHAR, 3);
-                get_score(NEWSTRING, str_length, SINGLECHAR, 50, 5.0f, 0, 1);
+                xor_bytes_to_string(&NEWSTRING, STRING3, str_length, SINGLECHAR, 1);
+                get_score(NEWSTRING, str_length, SINGLECHAR, 50, 2.0f, 0, 1);
         }
-        puts(get_best());
+        get_best();
         destroy_scores();
         free(NEWSTRING);
         free(STRING3);
@@ -46,23 +45,24 @@ int main(int argc, char **argv)
          * */
         printf("Challenge 4\nread 60 keys from file and find the encryption character\nand the according line");
         printf("\n");
-        char ENCCHAR[] = "A\0";
+        /*char ENCCHAR[] = "A\0";
         char filename[] = "/home/orbiter/matasano/src/challenge4keys.txt";
-        char *STR_STRING = NULL;
-        char *STR_XOR = NULL;
+        char *STR_STRING = malloc(1);
+        char *STR_XOR = malloc(1);
         long lines = 0;
-        long chars = 0;
-        long SIZEOFSTRING = 0;
-        long charcounter = 0;
 
         struct file_o *buffer1 = readBytes(filename);
         file_o_init(buffer1);
+        
         for(lines = 0; lines < buffer1->elements; lines++) {
-                //printf("%li  ", buffer1->length[lines]);
-                //puts(buffer1->buffer.c[lines]);
+                for(i=0; i < 256; i++) {
+                        SINGLECHAR[0] = i;
+                        xor_bytes_to_string(&STR_XOR, buffer1->buffer.c[lines], buffer1->length[lines], SINGLECHAR, 1);
+                        get_score(STR_XOR, str_length, SINGLECHAR, 50, 2.0f, 0, 1);
+                }
         }
         file_o_destroy(buffer1);
         free(STR_STRING);
-        free(STR_XOR); 
+        free(STR_XOR); */
 }
 

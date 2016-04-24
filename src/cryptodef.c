@@ -110,7 +110,7 @@ long hexstringToString(char **buffer, char *input)
         long a;
         long i = 0;
         for(a = 0; a < strlen(input); a+=2) {
-                (*buffer)[i] = 0x00f;
+                (*buffer)[i] = 0x00;
                 (*buffer)[i] |= charTo4Bits(input[a], a);
                 (*buffer)[i] |= charTo4Bits(input[a+1], a+1);
                 i++;
@@ -240,24 +240,23 @@ void equal_xor_hexstrings(unsigned char* output, char *input1, char *input2, lon
         free(bytes_input2);
 }
 
-
-
 int xor_bytes_to_string(char **output, char *input1, long longer, char *input2, long shorter)
 {
         long c;
         if(longer < shorter)
                 return 0;
-        char *tmp;
+        *output = (char *) realloc(*output, (longer+1) * sizeof(char));
+        if(output == NULL)
+                exit(-1);
+        /*char *tmp;
         tmp = (char *) realloc(*output, (longer+1) * sizeof(char));
         if(tmp != NULL)
                 *output = tmp;
         else
-                exit(-1);
+                exit(-1);*/
         long shortcounter=0;
         for(c=0; c < longer; c++) {
                 (*output)[c] = input1[c] ^ input2[shortcounter];
-                if((*output)[c] == '\0')
-                        (*output)[c] = '_';
                 shortcounter++;
                 if(shortcounter == shorter)
                         shortcounter = 0;
