@@ -22,26 +22,19 @@ int main(int argc, char **argv)
          */
         char HEXSTRING3[] = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736\0";
         //char HEXSTRING3[] = "7b5a4215415d544115415d5015455447414c155c46155f4058455c5b523f\0";
-        char *STRING3 = calloc(strlen(HEXSTRING3)/2+1, 1);
         char SINGLECHAR[] = "A\0";
+        char *STRING3 = malloc(1 * sizeof(char));
         int i, c;
         printf("Challenge 3\nfind the single byte to decrypt:\n");
         puts(HEXSTRING3);
-        printf("\n");
-        printf("Vor hexconvert: %li\n", strlen(HEXSTRING3));
-        hexstringToString(STRING3, HEXSTRING3);
-        printf("Nach hexconvert: %li\n", strlen(STRING3));
-        long str_length = ownlen(STRING3);
-        printf("ownlen: %li\n", str_length);
-        char *NEWSTRING = calloc(str_length+1, 1);
+        long str_length = hexstringToString(&STRING3, HEXSTRING3);
+        char *NEWSTRING = malloc(1 * sizeof(char));
         for(i=0; i < 54; i++) {
                 SINGLECHAR[0] = i;
-                xor_bytes(NEWSTRING, STRING3, strlen(STRING3), SINGLECHAR, 3);
-                printf("%i - XOR length: %li\n", i, strlen(STRING3));
-                //printf("%i - XOR ownlen: %li\n", i, ownlen(NEWSTRING));
-                get_score(NEWSTRING, strlen(STRING3), SINGLECHAR, 50, 5.0f, 0, 1);
+                xor_bytes_to_string(&NEWSTRING, STRING3, str_length, SINGLECHAR, 3);
+                get_score(NEWSTRING, str_length, SINGLECHAR, 50, 5.0f, 0, 1);
         }
-        //puts(get_best());
+        puts(get_best());
         destroy_scores();
         free(NEWSTRING);
         free(STRING3);

@@ -35,7 +35,7 @@ long b64length(char *pre_decode_STRING)
 long ownlen(char *input)
 {
         long charc = 0;
-        while(input[charc] != '\0' &&  input[charc] != '\n') {
+        while(input[charc] != '\0' || input[charc] != '\n') {
                 charc++;
         }
         return charc;
@@ -95,20 +95,28 @@ void bitsToHexchar(char *output, char *input)
         output[strlen(input)*2] = '\0';
 }
 
-void hexstringToString(char *buffer, char *input)
+long hexstringToString(char **buffer, char *input)
 {
-        if(ownlen(input) % 2 > 0) {
+        if(strlen(input) % 2 > 0) {
                 printf("Error - string length is odd. 2 hex needed to fill a byte!");
                 exit(-1);
         }
-        int a = 0;
-        int i = 0;
-        while(input[a] != '\0' && input[a] != '\n') {
-                buffer[i] |= charTo4Bits(input[a], a);
-                a++;
-                if(a % 2 == 0 && a != 0) i++;
+        char *tmp;
+        tmp = (char *) realloc(*buffer, (strlen(input)/2+1) * sizeof(char));
+        if(tmp != NULL)
+                *buffer = tmp;
+        else
+                exit(-1);
+        long a;
+        long i = 0;
+        for(a = 0; a < strlen(input); a+=2) {
+                (*buffer)[i] = 0x00f;
+                (*buffer)[i] |= charTo4Bits(input[a], a);
+                (*buffer)[i] |= charTo4Bits(input[a+1], a+1);
+                i++;
         }
-        buffer[i] = '\0';
+        (*buffer)[strlen(input)/2] = '\0';
+        return strlen(input)/2;
 }
 void hexstringToBytes(unsigned char *buffer, char *input)
 {
@@ -233,29 +241,30 @@ void equal_xor_hexstrings(unsigned char* output, char *input1, char *input2, lon
 }
 
 
-void xor_bytes(char *output, char *input1, long longer, char *input2, long shorter)
+
+int xor_bytes_to_string(char **output, char *input1, long longer, char *input2, long shorter)
 {
         long c;
-
         if(longer < shorter)
+                return 0;
+        char *tmp;
+        tmp = (char *) realloc(*output, (longer+1) * sizeof(char));
+        if(tmp != NULL)
+                *output = tmp;
+        else
                 exit(-1);
-        char *temp = calloc(longer+1, 1);
-
         long shortcounter=0;
         for(c=0; c < longer; c++) {
-                temp[c] = input1[c] ^ input2[shortcounter];
-                if(temp[c] == '\0')
-                        temp[c] = '_';
+                (*output)[c] = input1[c] ^ input2[shortcounter];
+                if((*output)[c] == '\0')
+                        (*output)[c] = '_';
                 shortcounter++;
-                if(shortcounter >= shorter)
+                if(shortcounter == shorter)
                         shortcounter = 0;
         }
-        temp[longer] = '\0';
-        memcpy(output, temp, longer+1);
-        free(temp);
-
+        (*output)[longer] = '\0';
+        return 1;
 }
-
 void xor_strings(char *output, char *input1, char *input2)
 {
         long c, longer, shorter;
