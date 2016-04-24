@@ -54,7 +54,6 @@ struct file_o *readBytes(char *filename)
 
         long vertical = 0;
         long horizontal = 0;
-        long horizontal_max = 0;
         unsigned char **new_buffer = NULL;
         unsigned char *new_line = NULL;
 
@@ -76,7 +75,6 @@ struct file_o *readBytes(char *filename)
         linelengthlist[0] = 0;
         while((buf_element = fgetc(fp)) != EOF) {
                 buffer[vertical][horizontal] = buf_element;
-                printf("%li / %li\n", vertical, horizontal);
                 // condition for vertical realloc (new list element)
                 if(buffer[vertical][horizontal] == '\0' || buffer[vertical][horizontal] == '\n') {
                         buffer[vertical][horizontal] = '\0';
@@ -111,18 +109,11 @@ struct file_o *readBytes(char *filename)
                 }
                 linelengthlist[vertical] = horizontal;
                 horizontal++;
-                if(horizontal > horizontal_max)
-                        horizontal_max = horizontal;
                 if(ferror(fp) != 0)
                         clearerr(fp);
         }
         long y;
         long x;
-                
-        printf("Statistics\n");
-        printf("Vertical: %li \t Horizontal: %li\n", vertical, horizontal_max);
-        printf("V-Surplus: %li \t H-Surplus: %li\n", vertical%horizontal_bufsize, horizontal_max%horizontal_bufsize);
-
         // resize alloc'd buffer to needed space
         // first: cleanup all pre-alloc'd lines
         for(y = 0; y < (vertical+1); y++) {

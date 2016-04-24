@@ -64,12 +64,11 @@ int main(int argc, char **argv)
         long charcounter = 0;
 
         struct file_o *buffer1 = readBytes(filename);
-        int j = file_o_init(buffer1);
+        file_o_init(buffer1);
         for(lines = 0; lines < buffer1->elements; lines++) {
                 printf("%li  ", buffer1->length[lines]);
                 puts(buffer1->buffer.c[lines]);
         }
-        printf("\n%i", j);
         file_o_destroy(buffer1);
         free(STR_STRING);
         free(STR_XOR); 
