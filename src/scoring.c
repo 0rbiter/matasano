@@ -13,6 +13,7 @@ static struct {
         .elements = 0,
         .length = NULL,
         .score = NULL,
+        .key = NULL,
         .text = NULL,
 };
 
@@ -44,6 +45,11 @@ void destroy_scores()
         free(scores.key);
         free(scores.score);
         free(scores.length);
+        scores.length = NULL,
+        scores.score = NULL,
+        scores.key = NULL,
+        scores.text = NULL,
+        scores.elements = 0;
 }
 
 void get_best()
@@ -86,15 +92,8 @@ int get_score(char *input_string, long str_length, char *key, int delimiter, flo
         long points = 0;
         float myscores[26];
 
-        for(l=0; l < 26; l++) {
-                myscores[l] = 0;
-                score[l] = 0;
-        }
-        letters_counted = 0;
-        points = 0;
-        unsigned char_repr = 0;
+        char char_repr = 0;
         for(f=0; f <= str_length; f++) {
-
                 char_repr = input_string[f];
                 if((char_repr >= 65) && (char_repr <= 90)) {
                         points += 1;
@@ -123,9 +122,9 @@ int get_score(char *input_string, long str_length, char *key, int delimiter, flo
                                 case '@':
                                 case '/':
                                 case '\\':
-                                        points += 1;
+                                        points += 0;
                                 default:
-                                        points -= 10;
+                                        points -= 15;
                         }
                 }
         }
