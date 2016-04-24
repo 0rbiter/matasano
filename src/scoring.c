@@ -81,27 +81,27 @@ void print_en_scores()
         printf("\n\n");
 }
 
-int get_score(char *input_string, long str_length, char *key, int delimiter, float offset, int prints, int repetition_penalty)
+int get_score(char *input_string, long str_length, char *key, int delimiter, float offset, int prints)
 {
         float score[26];
         unsigned long letters_counted = 0;
         long f;
-        if(offset == 0)
-                offset = 3;
         int l = 0;
-        long points = 0;
+        long points;
+        points = 0;
         float myscores[26];
-
+        for(l = 0; l < 26; l++)
+                myscores[l] = 0;
         char char_repr = 0;
         for(f=0; f <= str_length; f++) {
                 char_repr = input_string[f];
                 if((char_repr >= 65) && (char_repr <= 90)) {
-                        points += 1;
+                        points += 3;
                         letters_counted++;
                         score[char_repr-65]++;
                 }
                 else if((char_repr >= 97) &&  (char_repr <= (97+25))) {
-                        points += 1;
+                        points += 3;
                         letters_counted++;
                         score[char_repr-97]++;
                 }
@@ -124,7 +124,7 @@ int get_score(char *input_string, long str_length, char *key, int delimiter, flo
                                 case '\\':
                                         points += 0;
                                 default:
-                                        points -= 15;
+                                        points -= 5;
                         }
                 }
         }
@@ -134,8 +134,6 @@ int get_score(char *input_string, long str_length, char *key, int delimiter, flo
                 if(letterscore_en[l]-offset <= myscores[l] ^ letterscore_en[l]+offset <= myscores[l]) {
                         points += 10;
                 }
-                if(myscores[l] > 90 && repetition_penalty)
-                       points -=50;
         }
         points += letters_counted;
         if(points > delimiter) {

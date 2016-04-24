@@ -7,14 +7,6 @@
 #ifndef CRYPTODEF_H
 #define CRYPTODEF_H
 
-int isTerminated(char *string, long length)
-{
-        if(string[length] == '\0')
-                return 1;
-        else
-                return 0;
-}
-
 void stringToUpper(char *buffer)
 {
         while(*buffer)
