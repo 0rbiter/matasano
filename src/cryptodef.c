@@ -149,7 +149,7 @@ void bytesToB64(char *b64_string, unsigned char *buffer, long b64len, long buffe
 }
 
 
-void b64_decode_string(char *output, char *input, long inputlength)
+long b64_decode_string(char *output, char *input, long inputlength)
 {
         struct base64 *xobject = malloc(sizeof(struct base64));
         xobject->inputlength = inputlength;
@@ -170,6 +170,7 @@ void b64_decode_string(char *output, char *input, long inputlength)
         free(xobject->b64_string);
         free(xobject->ascii_string);
         free(xobject);
+        return inputlength/4*3;
 }
 
 void hexstring_encode_bytes(unsigned char *output, char *input, long inputlength)
