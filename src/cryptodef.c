@@ -60,6 +60,20 @@ void shiftArrayLeft(unsigned char *input, int size, int shift)
         }
 }
 
+void shift_char_array_left(char *input, int size, int shift)
+{
+        int i, s;
+        char carry = zero;
+        for(s=shift; s>0; s--) {
+                for(i=0; i<(size); i++) {
+                        if(i+1 != size)
+                                carry = (input[i+1] & 0x80) >> 7;
+                        else
+                                carry = zero;                     
+                        input[i] = carry | (input[i] << 1);
+                }
+        }
+}
 unsigned char charTo4Bits(char input, unsigned int leftorright)
 {
         if(HEXTABLE[0][0] != '0') buildHexTable();
@@ -87,6 +101,26 @@ void bitsToHexchar(char *output, char *input)
         output[strlen(input)*2] = '\0';
 }
 
+long active_b64_decode_string(char **output, char *input, long inputlength)
+{
+        char *temp;
+        temp = (char *) realloc((*output), (inputlength/4*3+1) * sizeof(char));
+        if(temp != NULL) 
+                *output = temp;
+        else
+                exit(-1);
+        if(inputlength % 4 > 0) exit(0);
+        long b, a;
+        for(b=0; b<inputlength; b++) {
+                a=0;
+                while(input[b] != BASE64[a] && a < 64 && input[b] != '=')
+                        a++;
+                shift_char_array_left((*output), inputlength/4*3, 6);
+                (*output)[inputlength/4*3-1] |= a;
+        }
+        (*output)[inputlength/4*3] = '\0';
+        return inputlength/4*3;
+}
 long hexstringToString(char **buffer, char *input)
 {
         if(strlen(input) % 2 > 0) {
@@ -172,6 +206,8 @@ long b64_decode_string(char *output, char *input, long inputlength)
         free(xobject);
         return inputlength/4*3;
 }
+
+
 
 void hexstring_encode_bytes(unsigned char *output, char *input, long inputlength)
 {

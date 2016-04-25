@@ -40,9 +40,10 @@ float get_keylength(int maxlength, long dataindex, char *data, long length)
 {
         if(maxlength < 2)
                 return -1;
+        if(length/2 < maxlength)
+                maxlength = length/2;
         int i; // counter variable for different key lengths
         int c; // outter counter, see splitter
-        int splitter; // splitter counter in order to address first & second block of data to be guessed
         float hd; // humming distance temp
         char *first = NULL; // catches first keylength worth of bits from the data
         char *second = NULL; // catch second keylength wort of bits
@@ -51,11 +52,9 @@ float get_keylength(int maxlength, long dataindex, char *data, long length)
         for(i = 2; i <= maxlength; i++) {
                 first = malloc(i * sizeof(char));
                 second = malloc(i * sizeof(char));
-                for(c = 0; c < i*2; c++) {
-                        for(splitter = 0; splitter < i; splitter++) {
-                                first[splitter] = data[c];
-                                second[splitter] = data[c+splitter];
-                        }
+                for(c = 0; c < i; c++) {
+                        first[c] = data[c];
+                        second[c] = data[c+i];
                 }
                 hd = humming_distance(first, second, i); 
                 distances[i-2] = hd / i;
@@ -92,8 +91,8 @@ int main(int argc, char **argv)
         float kl = 0;
         for(c = 0; c < filebuffer6->elements; c++) {
                 b64buffer[c] = malloc(1 * sizeof(struct base64));
-                b64buffer[c]->input = (char*) calloc((filebuffer6->length[c]+2) * sizeof(char) , 1);
-                length = b64_decode_string(b64buffer[c]->input, filebuffer6->buffer.c[c], filebuffer6->length[c]+1);
+                b64buffer[c]->input = malloc(1 * sizeof(char *));
+                length = active_b64_decode_string(&b64buffer[c]->input, filebuffer6->buffer.c[c], filebuffer6->length[c]+1);
                 if(1) {
                         puts(b64buffer[c]->input);
                         kl = get_keylength(20, c, b64buffer[c]->input, length);
