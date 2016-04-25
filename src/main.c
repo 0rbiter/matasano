@@ -8,6 +8,7 @@
 #include "cryptodef.c"
 #include "scoring.c"
 #include "set1.c"
+#include "histogram.c"
 
 void s1c1();
 void s1c2();
@@ -36,19 +37,22 @@ long humming_distance(char *word1, char *word2, long length)
         return distance;
 }
 
-float get_keylength(int maxlength, long dataindex, char *data, long length)
+int get_keylength(struct histogram **hobject, int maxlength, long dataindex, char *data, long length)
 {
         if(maxlength < 2)
                 return -1;
         if(length/2 < maxlength)
                 maxlength = length/2;
+
+
         int i; // counter variable for different key lengths
         int c; // outter counter, see splitter
         float hd; // humming distance temp
         char *first = NULL; // catches first keylength worth of bits from the data
         char *second = NULL; // catch second keylength wort of bits
-        float *distances = calloc((maxlength-1), sizeof(float));
+        struct humming *distances = calloc((maxlength-1), sizeof(struct humming));
         float min_distance = 0; // catches minimum distance over all keylengths tested
+        int min_key = 0; // catches minimum distance over all keylengths tested
         for(i = 2; i <= maxlength; i++) {
                 first = malloc(i * sizeof(char));
                 second = malloc(i * sizeof(char));
@@ -57,15 +61,22 @@ float get_keylength(int maxlength, long dataindex, char *data, long length)
                         second[c] = data[c+i];
                 }
                 hd = humming_distance(first, second, i); 
-                distances[i-2] = hd / i;
+                distances[i-2].n_editdistance = hd / i;
+                distances[i-2].keylength = i;
                 free(first);
                 free(second);
         }
         min_distance = 100000;
+        min_key = 2;
         for(i = 2; i <= maxlength; i++) {
-                if(distances[i-2] < min_distance)
-                        min_distance = distances[i-2];
+                if(distances[i-2].n_editdistance < min_distance) {
+                        min_distance = distances[i-2].n_editdistance;
+                        min_key = distances[i-2].keylength;
+                }
         }
+        
+        //histo_o_add(*hobject, data, length, min_key, min_distance);
+
         free(distances);
         return min_distance;
 }
@@ -89,14 +100,16 @@ int main(int argc, char **argv)
         struct keycharts *charts = malloc(1 * sizeof(struct keycharts));
         long c, length;
         float kl = 0;
+
+        struct histogram *hist = hist_o_init(filebuffer6->elements);
         for(c = 0; c < filebuffer6->elements; c++) {
                 b64buffer[c] = malloc(1 * sizeof(struct base64));
                 b64buffer[c]->input = malloc(1 * sizeof(char *));
                 length = active_b64_decode_string(&b64buffer[c]->input, filebuffer6->buffer.c[c], filebuffer6->length[c]+1);
                 if(1) {
                         puts(b64buffer[c]->input);
-                        kl = get_keylength(20, c, b64buffer[c]->input, length);
-                        printf("Minimum Distance: %0.2f\n", kl);
+                        kl = get_keylength(&hist, 20, c, b64buffer[c]->input, length);
+                        printf("Min distance: %0.2f\n", kl);
                 }
         }
         for(c = 0; c < filebuffer6->elements; c++) {
@@ -106,5 +119,6 @@ int main(int argc, char **argv)
         free(charts);
         free(b64buffer);
         file_o_destroy(filebuffer6);
+        hist_o_destroy(&hist);
 }
 
