@@ -19,7 +19,7 @@ struct keycharts {
         int *keylength;
 };
 
-int humming_distance(char *word1, char *word2, long length)
+long humming_distance(char *word1, char *word2, long length)
 {
         char *word = malloc((length+1) * sizeof(char));
         int i;
@@ -36,17 +36,18 @@ int humming_distance(char *word1, char *word2, long length)
         return distance;
 }
 
-int get_keylength(int maxlength, long dataindex, char *data, long length)
+float get_keylength(int maxlength, long dataindex, char *data, long length)
 {
         if(maxlength < 2)
                 return -1;
-        int i;
-        int c;
-        int splitter;
-        char *first = NULL;
-        char *second = NULL;
-        int *distances = malloc((maxlength-1) * sizeof(int));
-        int min_distance = 0;
+        int i; // counter variable for different key lengths
+        int c; // outter counter, see splitter
+        int splitter; // splitter counter in order to address first & second block of data to be guessed
+        float hd; // humming distance temp
+        char *first = NULL; // catches first keylength worth of bits from the data
+        char *second = NULL; // catch second keylength wort of bits
+        float *distances = calloc((maxlength-1), sizeof(float));
+        float min_distance = 0; // catches minimum distance over all keylengths tested
         for(i = 2; i <= maxlength; i++) {
                 first = malloc(i * sizeof(char));
                 second = malloc(i * sizeof(char));
@@ -56,23 +57,23 @@ int get_keylength(int maxlength, long dataindex, char *data, long length)
                                 second[splitter] = data[c+splitter];
                         }
                 }
-                distances[i-2] = humming_distance(first, second, i) / i;
+                hd = humming_distance(first, second, i); 
+                distances[i-2] = hd / i;
                 free(first);
                 free(second);
         }
         min_distance = 100000;
         for(i = 2; i <= maxlength; i++) {
-                if(distances[i] < min_distance)
-                        min_distance = distances[i];
-                printf("Keylength: %i\tEdit Distance: %i\n", i, distances[i-2]);
+                if(distances[i-2] < min_distance)
+                        min_distance = distances[i-2];
         }
         free(distances);
         return min_distance;
 }
 
 int main(int argc, char **argv)
-{
-/*        s1c1();
+{ /*
+        s1c1();
         s1c2();
         s1c3();
         s1c4();
@@ -81,27 +82,30 @@ int main(int argc, char **argv)
         char *word1 = "this is a test\0";
         char *word2 = "wokka wokka!!!\0";
         //printf("%li", humming_distance(word1, word2));
-        struct file_o *buffer6 = readBytes(filename6);
-        file_o_init(buffer6);
-        printf("%li", buffer6->elements);
-        struct base64 **bbuffer = malloc((buffer6->elements+1) * sizeof(struct base64 *));
+        struct file_o *filebuffer6 = readBytes(filename6);
+        file_o_init(filebuffer6);
+        printf("%li", filebuffer6->elements);
+        struct base64 **b64buffer = malloc((filebuffer6->elements+1) * sizeof(struct base64 *));
 
         struct keycharts *charts = malloc(1 * sizeof(struct keycharts));
         long c, length;
-        for(c = 0; c < buffer6->elements; c++) {
-                bbuffer[c] = malloc(1 * sizeof(struct base64));
-                bbuffer[c]->input = (char*) calloc((buffer6->length[c]+2) * sizeof(char) , 1);
-                length = b64_decode_string(bbuffer[c]->input, buffer6->buffer.c[c], buffer6->length[c]+1);
-                if(!c) {
-                        puts(bbuffer[c]->input);
-                        get_keylength(4, c, bbuffer[c]->input, length);
+        float kl = 0;
+        for(c = 0; c < filebuffer6->elements; c++) {
+                b64buffer[c] = malloc(1 * sizeof(struct base64));
+                b64buffer[c]->input = (char*) calloc((filebuffer6->length[c]+2) * sizeof(char) , 1);
+                length = b64_decode_string(b64buffer[c]->input, filebuffer6->buffer.c[c], filebuffer6->length[c]+1);
+                if(1) {
+                        puts(b64buffer[c]->input);
+                        kl = get_keylength(20, c, b64buffer[c]->input, length);
+                        printf("Minimum Distance: %0.2f\n", kl);
                 }
         }
-        for(c = 0; c < buffer6->elements; c++) {
-                free(bbuffer[c]->input);
-                free(bbuffer[c]);
+        for(c = 0; c < filebuffer6->elements; c++) {
+                free(b64buffer[c]->input);
+                free(b64buffer[c]);
         }
-        free(bbuffer);
-        file_o_destroy(buffer6);
+        free(charts);
+        free(b64buffer);
+        file_o_destroy(filebuffer6);
 }
 
