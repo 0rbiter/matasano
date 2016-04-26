@@ -175,9 +175,9 @@ void buildHeap(float **heap, long heapsize)
 void heapsort(float **heap, long heapsize)
 {
         long index = heapsize;
+        buildHeap(heap, index);
         while(index > 2) {
                 swap(&(*heap)[1], &(*heap)[index-1], sizeof(float));
-                printf("\n%0.3f - %0.3f", (*heap)[1], (*heap)[index-1]);
                 buildHeap(heap, index-1);
                 index--;
         }
@@ -224,27 +224,19 @@ int main(int argc, char **argv)
         file_o_destroy(filebuffer6);
         hist_o_destroy(&hist);
 */
-        float *heap = calloc(16, sizeof(float));
+        long l_heapsize = 600001;
+        float *heap = calloc(l_heapsize+1, sizeof(float));
+        if(heap == NULL)
+                exit(-1);
         int y;
         srand((unsigned int)time(NULL));
         float a = 999.0f;
+        for(y = 1; y < l_heapsize; y++)
+                        heap[y] = ((float) rand() / (float)(RAND_MAX)) * a;
+        printf("\nRandom numbers generated. Starting heapsort\n");
         heap[0] = 0.0f;
-        printf("%i\t%.3f\n", 0, heap[0]);
-        for(y = 1; y < 15; y++) {
-                heap[y] = ((float) rand() / (float)(RAND_MAX)) * a;
-                //printf("%i\t%.3f\n", y, heap[y]);
-        }
-
-        printf("____________________________________\n");
-        buildHeap(&heap, 15);
-        printf("%i\t%.3f\n", 0, heap[0]);
-        for(y = 1; y < 15; y++) {
-                printf("%i\t%.3f\n", y, heap[y]);
-        }
-        printf("____________________________________\n"); 
-
-        heapsort(&heap, 15);
-        for(y = 0; y < 15; y++) {
+        heapsort(&heap, l_heapsize);
+        for(y = 0; y < 10; y++) {
                 printf("%i\t%.3f\n", y, heap[y]);
         }
         free(heap);
