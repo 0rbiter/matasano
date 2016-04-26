@@ -1,9 +1,6 @@
 #ifndef STANDARD_LIBS
 #define STANDARD_LIBS
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include "headerfiles.h"
 #endif
 
 /* cryptodata.h */
@@ -29,5 +26,55 @@ struct base64 {
         char *b64_string;
         unsigned char *ascii_string;
 } base64;
+
+union _byte {
+        char s_char;
+        unsigned char u_char;
+};
+
+union _2byte {
+        short int s_sh_int;
+        unsigned short int u_sh_int;
+        union _byte bytes[2];
+};
+
+union _4byte {
+        int s_int;
+        unsigned int u_int;
+        long int l_int;
+        float _float;
+        union _byte _bytes[4];
+        union _2byte _2bytes[2];
+};
+
+union _8byte {
+        double _double;
+        union _4byte _4bytes[2];
+};
+
+union Ptr_byte {
+        char *s_char;
+        unsigned char *u_char;
+};
+
+union Ptr_2byte {
+        short int *s_sh_int;
+        unsigned short int *u_sh_int;
+        union _byte *bytes[2];
+};
+
+union Ptr_4byte {
+        int *s_int;
+        unsigned int *u_int;
+        long int *l_int;
+        float *_float;
+        union _byte *_bytes[4];
+        union _2byte *_2bytes[2];
+};
+
+union Ptr_8byte {
+        double *_double;
+        union _4byte *_4bytes[2];
+};
 
 #endif /* !CRYPTODATA_H */

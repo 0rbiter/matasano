@@ -1,3 +1,8 @@
+#ifndef STANDARD_LIBS
+#define STANDARD_LIBS
+#include "headerfiles.h"
+#endif
+
 /* filehandler.h */
 #ifndef FILEHANDLER_H
 #define FILEHANDLER_H
