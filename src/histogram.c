@@ -12,8 +12,9 @@ struct histogram {
         char **data;
         long *inputlength;
         struct humming {
-                int keylength;
-                float n_editdistance;
+                int keys_total;
+                int *keylength;
+                float *n_editdistance;
         } *hum;
         struct lang {
                 char *testkey;
@@ -23,7 +24,7 @@ struct histogram {
         } *scores;
 };
 
-struct histogram *hist_o_init(long elements)
+struct histogram *hist_o_init(long elements, int keys_total)
 {
         long counter;
         int i;
@@ -38,7 +39,9 @@ struct histogram *hist_o_init(long elements)
         for(counter = 0; counter < elements; counter++) {
                 hobject->data[counter] = (char *) malloc(1 * sizeof(char)); 
                 hobject->inputlength[counter] = 0;
-                hobject->hum[counter].keylength = 0;
+                hobject->hum[counter].keys_total = keys_total;
+                hobject->hum[counter].keylength = (int *) malloc(keys_total * sizeof(int));
+                hobject->hum[counter].n_editdistance = (float *) malloc(keys_total * sizeof(float));
                 hobject->scores[counter].testkey = (char *) malloc(1 * sizeof(char));
                 hobject->scores[counter].unciphered = (char *) malloc(1 * sizeof(char));
                 hobject->scores[counter].score = 0;
