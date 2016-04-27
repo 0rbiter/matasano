@@ -67,6 +67,8 @@ int hist_o_destroy(struct histogram **hobject)
                 free((*hobject)->data[counter]); 
                 free((*hobject)->scores[counter].testkey);
                 free((*hobject)->scores[counter].unciphered);
+                free((*hobject)->hum[counter].keylength);
+                free((*hobject)->hum[counter].n_editdistance);
         }
 
         free((*hobject)->data); // list of input data to be deciphered
