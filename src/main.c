@@ -3,6 +3,9 @@
 #include "headerfiles.h"
 #endif
 
+
+#ifndef PROJECT_LIBS
+#define PROJECT_LIBS
 #include "cryptodata.h"
 #include "filehandler.c"
 #include "cryptodef.c"
@@ -11,6 +14,7 @@
 #include "histogram.c"
 #include "heapsort.c"
 #include "tools.c"
+#endif 
 
 int main(int argc, char **argv)
 { /*
@@ -22,7 +26,6 @@ int main(int argc, char **argv)
 
     */    
         char *filename6 = "/home/orbiter/matasano/src/challenge6keys.txt";
-        //printf("%li", humming_distance(word1, word2));
         struct file_o *filebuffer6 = readBytes(filename6);
         file_o_init(filebuffer6);
         printf("%li", filebuffer6->elements);
@@ -50,10 +53,12 @@ int main(int argc, char **argv)
         free(b64buffer);
         file_o_destroy(filebuffer6);
         hist_o_destroy(&hist);
+        
+        /*
+         * Heapsort Testing ere
+         */
 
-
-         
-        long l_heapsize = 500001;
+        long l_heapsize = 5001;
         float *heap = calloc(l_heapsize+1, sizeof(float));
         if(heap == NULL)
                 exit(-1);
@@ -69,6 +74,7 @@ int main(int argc, char **argv)
                 printf("%i\t%.3f\n", y, heap[y]);
         }
         free(heap);
+
         /* 
         printf("____________________________________");
         union _byte *string1 = (union _byte *) "\nAbc\0";

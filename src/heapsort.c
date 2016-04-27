@@ -3,6 +3,11 @@
 #include "headerfiles.h"
 #endif
 
+#ifndef PROJECT_LIBS
+#define PROJECT_LIBS
+#include "cryptodata.h"
+#endif 
+
 /* heapsort.c */
 #ifndef HEAPSORT_C
 #define HEAPSORT_C
@@ -15,7 +20,29 @@ void swap(void *one, void *two, size_t size)
         memcpy(two, temp, size);
 }
 
+struct s_4byte {
+        union {
+                float _float;
+                char _char[4];
+        };
+};
+
 static long _heapsize;
+static struct s_4byte *sPtr1;
+static struct s_4byte *sPtr2;
+
+void xor_swap(float *one, float *two, size_t size)
+{
+        long i;
+        sPtr1 = (struct s_4byte *) one;
+        sPtr2 = (struct s_4byte *) two;
+        for(i = 0; i < size; i++) {
+                sPtr1->_char[i] ^= sPtr2->_char[i];
+                sPtr2->_char[i] ^= sPtr1->_char[i];
+                sPtr1->_char[i] ^= sPtr2->_char[i];
+        }
+        return;
+}
 
 long heap_left(long index)
 {
@@ -40,7 +67,8 @@ void heapify(float **heap, long heapsize, long index)
                 if(largest == index) 
                         break;
                 else {
-                swap(&(*heap)[index], &(*heap)[largest], sizeof(float));
+                //swap(&(*heap)[index], &(*heap)[largest], sizeof(float));
+                xor_swap(&(*heap)[index], &(*heap)[largest], sizeof(float));
                 index = largest;
                 }
         } while(1);
@@ -62,7 +90,8 @@ void heapsort(float **heap, long heapsize)
         long index = heapsize;
         buildHeap(heap, index);
         while(index > 2) {
-                swap(&(*heap)[1], &(*heap)[index-1], sizeof(float));
+                //swap(&(*heap)[1], &(*heap)[index-1], sizeof(float));
+                xor_swap(&(*heap)[1], &(*heap)[index-1], sizeof(float));
                 buildHeap(heap, index-1);
                 index--;
         }

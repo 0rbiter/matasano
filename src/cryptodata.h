@@ -45,6 +45,7 @@ union _4byte {
         float _float;
         union _byte _bytes[4];
         union _2byte _2bytes[2];
+        unsigned char _chars[4];
 };
 
 union _8byte {
@@ -60,7 +61,7 @@ union Ptr_byte {
 union Ptr_2byte {
         short int *s_sh_int;
         unsigned short int *u_sh_int;
-        union _byte *bytes[2];
+        char _char[2];
 };
 
 union Ptr_4byte {
@@ -68,13 +69,13 @@ union Ptr_4byte {
         unsigned int *u_int;
         long int *l_int;
         float *_float;
-        union _byte *_bytes[4];
-        union _2byte *_2bytes[2];
+        char _char[4];
+        unsigned char _uchar[4];
 };
 
 union Ptr_8byte {
         double *_double;
-        union _4byte *_4bytes[2];
+        union _4byte _4bytes[2];
 };
 
 #endif /* !CRYPTODATA_H */
