@@ -63,7 +63,6 @@ struct file_o *readBytes(char *filename)
         if(!fp)
                 exit(-1);
         unsigned int buf_element;
-        long counter;
 
         long vertical = 0;
         long horizontal = 0;

@@ -7,8 +7,25 @@
 #ifndef HISTOGRAM_C
 #define HISTOGRAM_C
 
+/*
+ * the histogram will contain all strings to be decoded
+ *  -> # of "elements" = strings to decypher
+ *  -> "data" string
+ *  -> "inputlength" per string
+ *
+ *  -> humming results "hum" keylength per string "data"
+ *      -> "keys_total" number of best guessed keylengths
+ *      -> "keylength[]" keylengths
+ *      -> "n_editdistance[]" normalized edit distances per keylength according to "data"
+ *  -> struct lang "scores"
+ *      -> tested key "testkey" char
+ *      -> "unciphered" decyphered data according to testkey
+ *      -> "score[]" list of scores for to "unciphered"
+ *
+ */
+
 struct histogram {
-        double elements;
+        long elements;
         char **data;
         long *inputlength;
         struct humming {
@@ -25,7 +42,7 @@ struct histogram {
 };
 
 struct histogram *hist_o_init(long elements, int keys_total)
-{
+{ // elements: how many strings; keys_total = how many keylengths will be tested
         long counter;
         int i;
         struct histogram *hobject = malloc(sizeof(struct histogram));
@@ -37,9 +54,9 @@ struct histogram *hist_o_init(long elements, int keys_total)
         hobject->hum = malloc(elements * sizeof(struct humming));
         hobject->scores = malloc(elements * sizeof(struct lang));
         for(counter = 0; counter < elements; counter++) {
-                hobject->data[counter] = (char *) malloc(1 * sizeof(char)); 
+                //hobject->data[counter] = (char *) malloc(1 * sizeof(char)); 
                 hobject->inputlength[counter] = 0;
-                hobject->hum[counter].keys_total = keys_total;
+                hobject->hum[counter].keys_total = keys_total; // how many keylengths
                 hobject->hum[counter].keylength = (int *) malloc(keys_total * sizeof(int));
                 hobject->hum[counter].n_editdistance = (float *) malloc(keys_total * sizeof(float));
                 hobject->scores[counter].testkey = (char *) malloc(1 * sizeof(char));
@@ -70,7 +87,6 @@ int hist_o_destroy(struct histogram **hobject)
                 free((*hobject)->hum[counter].keylength);
                 free((*hobject)->hum[counter].n_editdistance);
         }
-
         free((*hobject)->data); // list of input data to be deciphered
         free((*hobject)->inputlength);
         free((*hobject)->hum);
