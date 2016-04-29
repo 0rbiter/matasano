@@ -165,6 +165,30 @@ struct file_o *readBytes(char *filename)
         return result;
 }
 
+long getStringLength(struct file_o **fobject)
+{
+        int i;
+        long sum_lengths = 0;
+        for(i = 0; i < (*fobject)->elements; i++) 
+                        sum_lengths += (*fobject)->length[i]+1;
+        return sum_lengths;
+}
+
+char *getString(struct file_o **fobject)
+{
+        int i, j;
+        long sum_lengths = 0;
+        char *output = malloc((getStringLength(&(*fobject)) + 1) * sizeof(char));
+        for(i = 0; i < (*fobject)->elements; i++) {
+                for(j = 0; j < (*fobject)->length[i]+1; j++) {
+                        output[sum_lengths+j] = (*fobject)->buffer.c[i][j];
+                }
+                sum_lengths += (*fobject)->length[i]+1;
+        }
+        output[sum_lengths] = '\0';
+        return output;
+}
+
 long getFilesize(char *path)
 {
         FILE *filename;

@@ -25,9 +25,8 @@
  */
 
 struct histogram {
-        long elements;
-        char **data;
-        long *inputlength;
+        char *data;
+        long inputlength;
         struct humming {
                 int keys_total;
                 int *keylength;
@@ -41,30 +40,25 @@ struct histogram {
         } *scores;
 };
 
-struct histogram *hist_o_init(long elements, int keys_total)
+struct histogram *hist_o_init(int keys_total)
 { // elements: how many strings; keys_total = how many keylengths will be tested
         long counter;
         int i;
         struct histogram *hobject = malloc(sizeof(struct histogram));
-        hobject->elements = elements; // max elements
+        hobject->data = (char *) malloc(sizeof(char)); // list of input data to be deciphered
 
-        hobject->data = (char **) malloc(elements * sizeof(char *)); // list of input data to be deciphered
-
-        hobject->inputlength = (long *) malloc(elements * sizeof (long));
-        hobject->hum = malloc(elements * sizeof(struct humming));
-        hobject->scores = malloc(elements * sizeof(struct lang));
-        for(counter = 0; counter < elements; counter++) {
-                //hobject->data[counter] = (char *) malloc(1 * sizeof(char)); 
-                hobject->inputlength[counter] = 0;
-                hobject->hum[counter].keys_total = keys_total; // how many keylengths
-                hobject->hum[counter].keylength = (int *) malloc(keys_total * sizeof(int));
-                hobject->hum[counter].n_editdistance = (float *) malloc(keys_total * sizeof(float));
-                hobject->scores[counter].testkey = (char *) malloc(1 * sizeof(char));
-                hobject->scores[counter].unciphered = (char *) malloc(1 * sizeof(char));
-                hobject->scores[counter].score = 0;
-                for(i = 0; i < 26; i++)
-                        hobject->scores[counter].scoreboard[i] = 0.0f;
-        }
+        hobject->inputlength = 0;
+        hobject->hum = malloc(sizeof(struct humming));
+        hobject->scores = malloc(sizeof(struct lang));
+        hobject->inputlength = 0;
+        hobject->hum->keys_total = keys_total; // how many keylengths
+        hobject->hum->keylength = (int *) malloc(keys_total * sizeof(int));
+        hobject->hum->n_editdistance = (float *) malloc(keys_total * sizeof(float));
+        hobject->scores->testkey = (char *) malloc(1 * sizeof(char));
+        hobject->scores->unciphered = (char *) malloc(1 * sizeof(char));
+        hobject->scores->score = 0;
+        for(i = 0; i < 26; i++)
+                hobject->scores->scoreboard[i] = 0.0f;
                                                                 // the strings according each element
                                                                 //
                                                                 /* according length to input string
@@ -74,24 +68,18 @@ struct histogram *hist_o_init(long elements, int keys_total)
         return hobject;
 }
 
-
-
-int hist_o_destroy(struct histogram **hobject)
+int hist_o_destroy(struct histogram *hobject)
 {
         long counter;
         int i;
-        for(counter = 0; counter < (*hobject)->elements; counter++) {
-                free((*hobject)->data[counter]); 
-                free((*hobject)->scores[counter].testkey);
-                free((*hobject)->scores[counter].unciphered);
-                free((*hobject)->hum[counter].keylength);
-                free((*hobject)->hum[counter].n_editdistance);
-        }
-        free((*hobject)->data); // list of input data to be deciphered
-        free((*hobject)->inputlength);
-        free((*hobject)->hum);
-        free((*hobject)->scores);
-        free((*hobject));
+        free(hobject->data); 
+        free(hobject->scores->testkey);
+        free(hobject->scores->unciphered);
+        free(hobject->hum->keylength);
+        free(hobject->hum->n_editdistance);
+        free(hobject->hum);
+        free(hobject->scores);
+        free(hobject);
         return 0;
 }
 

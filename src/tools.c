@@ -37,7 +37,7 @@ long humming_distance(char *word1, char *word2, long length)
 }
 
 int get_keylength(struct histogram **hobject, int maxlength, 
-                        long dataindex, char *data, long length, int keys_total)
+                        char *data, long length, int keys_total)
 {
         if(maxlength < 2)
                 return -1;
@@ -77,10 +77,10 @@ int get_keylength(struct histogram **hobject, int maxlength,
         
         if(maxlength-1 < keys_total)
                 printf("Error: More keylengths requested then guessed.\n");
-        (*hobject)->data[dataindex] = data;
+        (*hobject)->data = data;
         for(keycounter = 0; keycounter < keys_total; keycounter++) {
-               (*hobject)->hum[dataindex].keylength[keycounter] = distances->keylength[keycounter];
-               (*hobject)->hum[dataindex].n_editdistance[keycounter] = distances->n_editdistance[keycounter];
+               (*hobject)->hum->keylength[keycounter] = distances->keylength[keycounter];
+               (*hobject)->hum->n_editdistance[keycounter] = distances->n_editdistance[keycounter];
 
         }
         free(distances->keylength);

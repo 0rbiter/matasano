@@ -109,6 +109,7 @@ long active_b64_decode_string(char **output, char *input, long inputlength)
                 *output = temp;
         else
                 exit(-1);
+        free(*output);
         if(inputlength % 4 > 0) exit(0);
         long b, a;
         for(b=0; b<inputlength; b++) {
