@@ -58,24 +58,27 @@ struct histogram {
 void transpose(struct transposed **tobject, char **inputstring, long length, int divisor)
 {
         int i, o, c;
-        long newlength = length - (length%divisor);
-        (*tobject)->elements = length/divisor;
+        long templength = length;
+        (*tobject)->elements = divisor;
         (*tobject)->lengths = malloc(length/divisor * sizeof(long));
         (*tobject)->blocks = malloc(length/divisor * sizeof(char *));
         printf("Length: %li\tDivisor: %i - %li\n", length, divisor, length/divisor);
-        for(i = 0; i < divisor; i++)
-                (*tobject)->blocks[i] = malloc(length/divisor * sizeof(char));
+        for(i = 0; i < divisor; i++) {
+                (*tobject)->blocks[i] = calloc(length/divisor, sizeof(char));
+                (*tobject)->lengths[i] = length / divisor;
+        }
         o = 0;
         c = 0;
-        while(newlength > 0) {
+        while(length-1 >= c+i) {
                 for(i = 0; i < divisor; i++) {
-                        //printf("\nc: %i\to: %i\ti: %i", c, o, i);
-                        (*tobject)->blocks[i][c+o] = (*inputstring)[c+i];
+                        printf("\nc: %i\to: %i\ti: %i\tchar: %c", c, o, i, (*inputstring)[c+i]);
+                        (*tobject)->blocks[i][o] = (*inputstring)[c+i];
                 }
                 o++;
                 c += divisor;
-                newlength -= divisor;
         }
+        for(i = 0; i < divisor; i++)
+                printf("\nBlock: %i\tLength: %li", i, (*tobject)->lengths[i]);
 }
 
 int resolveKeylength(struct humming **hobject, float editdistance)
@@ -201,6 +204,11 @@ int hist_o_destroy(struct histogram *hobject)
 {
         long counter;
         int i;
+        for(i = 0; i < hobject->tdata->elements; i++)
+                free(hobject->tdata->blocks[i]);
+        free(hobject->tdata->blocks);
+        free(hobject->tdata->lengths);
+        free(hobject->tdata);
         free(hobject->data); 
         free(hobject->scores->testkey);
         free(hobject->scores->unciphered);
