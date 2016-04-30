@@ -30,23 +30,19 @@ int main(int argc, char **argv)
         file_o_init(filebuffer6);
         char *b64string = malloc(1);
         char *wholestring = getString(&filebuffer6);
-        file_o_destroy(filebuffer6);
         long c, length;
 
         int keys_total = 3;
         struct histogram *hist = hist_o_init(keys_total);
-        hist_o_destroy(hist);
-        length = active_b64_decode_string(&b64string, wholestring, strlen(wholestring)+1);
-        free(wholestring);
-        free(b64string);
-        //get_keylength(&hist, 20, b64buffer->input, length, keys_total);
+        length = active_b64_decode_string(&b64string, wholestring, strlen(wholestring));
+        get_keylength(&hist, 20, b64string, length, keys_total);
         long f;
-     /*   puts(hist->data);
+        //puts(hist->data);
                 for(c = 0; c < keys_total; c++)
                         printf("\t%i\t\t%0.5f\n", hist->hum->keylength[c], hist->hum->n_editdistance[c]); 
-                        */
-      /*  free(wholestring);
+                        
+        free(wholestring);
         file_o_destroy(filebuffer6);
-        hist_o_destroy(hist); */
+        hist_o_destroy(hist); 
 }
 

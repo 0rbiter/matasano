@@ -109,8 +109,10 @@ long active_b64_decode_string(char **output, char *input, long inputlength)
                 *output = temp;
         else
                 exit(-1);
-        free(*output);
-        if(inputlength % 4 > 0) exit(0);
+        if(inputlength % 4 > 0) {
+                printf("Error, inputlength is not suitable for base64 decoding: %li", inputlength);
+                exit(-1);
+        }
         long b, a;
         for(b=0; b<inputlength; b++) {
                 a=0;
