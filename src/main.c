@@ -39,10 +39,12 @@ int main(int argc, char **argv)
         long f;
         puts(hist->data);
         for(c = 0; c < keys_total; c++)
-                printf("\t%i\t\t%0.5f\n", hist->hum->keylength[c], hist->hum->n_editdistance[c]); 
+                printf("\t%i\t\t%0.5f\n", hist->hum->keylength[c], hist->hum->n_editdistance[c]);
+        transpose(&hist->tdata, &hist->data, length, hist->hum->keylength[0]);
         free(wholestring);
         free(b64string);
         file_o_destroy(filebuffer6);
         hist_o_destroy(hist); 
+
 }
 

@@ -37,6 +37,11 @@
 struct histogram {
         char *data;
         long inputlength;
+        struct transposed {
+                long elements;
+                long *lengths;
+                char **blocks;
+        } *tdata;
         struct humming {
                 int keys_total;
                 int *keylength;
@@ -49,6 +54,29 @@ struct histogram {
                 float scoreboard[26];
         } *scores;
 };
+
+void transpose(struct transposed **tobject, char **inputstring, long length, int divisor)
+{
+        int i, o, c;
+        long newlength = length - (length%divisor);
+        (*tobject)->elements = length/divisor;
+        (*tobject)->lengths = malloc(length/divisor * sizeof(long));
+        (*tobject)->blocks = malloc(length/divisor * sizeof(char *));
+        printf("Length: %li\tDivisor: %i - %li\n", length, divisor, length/divisor);
+        for(i = 0; i < divisor; i++)
+                (*tobject)->blocks[i] = malloc(length/divisor * sizeof(char));
+        o = 0;
+        c = 0;
+        while(newlength > 0) {
+                for(i = 0; i < divisor; i++) {
+                        //printf("\nc: %i\to: %i\ti: %i", c, o, i);
+                        (*tobject)->blocks[i][c+o] = (*inputstring)[c+i];
+                }
+                o++;
+                c += divisor;
+                newlength -= divisor;
+        }
+}
 
 int resolveKeylength(struct humming **hobject, float editdistance)
 {   /* this function is searching for the according keylength given a editdistance
@@ -147,7 +175,7 @@ struct histogram *hist_o_init(int keys_total)
         int i;
         struct histogram *hobject = malloc(sizeof(struct histogram));
         hobject->data = (char *) malloc(sizeof(char)); // list of input data to be deciphered
-
+        hobject->tdata = malloc(sizeof(struct transposed));
         hobject->inputlength = 0;
         hobject->hum = malloc(sizeof(struct humming));
         hobject->scores = malloc(sizeof(struct lang));

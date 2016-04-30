@@ -62,7 +62,7 @@ struct file_o *readBytes(char *filename)
         FILE *fp = fopen(filename, "r");
         if(!fp)
                 exit(-1);
-        unsigned int buf_element;
+        int buf_element;
 
         long vertical = 0;
         long horizontal = 0;
