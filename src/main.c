@@ -11,8 +11,8 @@
 #include "cryptodef.c"
 #include "scoring.c"
 #include "set1.c"
-#include "histogram.c"
 #include "heapsort.c"
+#include "histogram.c"
 #include "tools.c"
 #endif 
 
@@ -37,11 +37,11 @@ int main(int argc, char **argv)
         length = active_b64_decode_string(&b64string, wholestring, strlen(wholestring));
         get_keylength(&hist, 20, b64string, length, keys_total);
         long f;
-        //puts(hist->data);
-                for(c = 0; c < keys_total; c++)
-                        printf("\t%i\t\t%0.5f\n", hist->hum->keylength[c], hist->hum->n_editdistance[c]); 
-                        
+        puts(hist->data);
+        for(c = 0; c < keys_total; c++)
+                printf("\t%i\t\t%0.5f\n", hist->hum->keylength[c], hist->hum->n_editdistance[c]); 
         free(wholestring);
+        free(b64string);
         file_o_destroy(filebuffer6);
         hist_o_destroy(hist); 
 }

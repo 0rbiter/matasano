@@ -104,7 +104,7 @@ void bitsToHexchar(char *output, char *input)
 long active_b64_decode_string(char **output, char *input, long inputlength)
 {
         char *temp;
-        temp = (char *) realloc((*output), (inputlength/4*3+1) * sizeof(char));
+        temp = (char *) realloc(*output, (inputlength/4*3+1) * sizeof(char));
         if(temp != NULL) 
                 *output = temp;
         else
