@@ -62,7 +62,7 @@ void transpose(struct transposed **tobject, char **inputstring, long length, int
         (*tobject)->elements = divisor;
         (*tobject)->lengths = malloc(length/divisor * sizeof(long));
         (*tobject)->blocks = malloc(length/divisor * sizeof(char *));
-        printf("Length: %li\tDivisor: %i - %li\n", length, divisor, length/divisor);
+        //printf("Length: %li\tDivisor: %i - %li\n", length, divisor, length/divisor);
         for(i = 0; i < divisor; i++) {
                 (*tobject)->blocks[i] = calloc(length/divisor, sizeof(char));
                 (*tobject)->lengths[i] = length / divisor;
@@ -71,14 +71,14 @@ void transpose(struct transposed **tobject, char **inputstring, long length, int
         c = 0;
         while(length-1 >= c+i) {
                 for(i = 0; i < divisor; i++) {
-                        printf("\nc: %i\to: %i\ti: %i\tchar: %c", c, o, i, (*inputstring)[c+i]);
+                        //printf("\nc: %i\to: %i\ti: %i\tchar: %c", c, o, i, (*inputstring)[c+i]);
                         (*tobject)->blocks[i][o] = (*inputstring)[c+i];
                 }
                 o++;
                 c += divisor;
         }
         for(i = 0; i < divisor; i++)
-                printf("\nBlock: %i\tLength: %li", i, (*tobject)->lengths[i]);
+                //printf("\nBlock: %i\tLength: %li", i, (*tobject)->lengths[i]);
 }
 
 int resolveKeylength(struct humming **hobject, float editdistance)
