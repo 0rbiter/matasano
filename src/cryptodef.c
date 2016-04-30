@@ -193,7 +193,10 @@ long b64_decode_string(char *output, char *input, long inputlength)
         xobject->b64_string = (char*) calloc(xobject->inputlength+1, 1);
         xobject->ascii_string = (unsigned char*) calloc(xobject->inputlength/4*3, 1);
         memcpy(xobject->b64_string, input, inputlength);
-        if(inputlength % 4 > 0) exit(0);
+        if(inputlength % 4 > 0) {
+                printf("Error, inputlength is not suitable for base64 decoding: %li", inputlength);
+                exit(-1);
+        }
         long b, a;
         for(b=0; b<inputlength; b++) {
                 a=0;
