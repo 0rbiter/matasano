@@ -47,12 +47,7 @@ struct histogram {
                 int *keylength;
                 float *n_editdistance;
         } *hum;
-        struct lang {
-                char *testkey;
-                char *unciphered;
-                int score;
-                float scoreboard[26];
-        } *scores;
+        char *testkey;
 };
 
 void transpose(struct transposed **tobject, char **inputstring, long length, int divisor)
@@ -77,7 +72,7 @@ void transpose(struct transposed **tobject, char **inputstring, long length, int
                 o++;
                 c += divisor;
         }
-        for(i = 0; i < divisor; i++)
+        //for(i = 0; i < divisor; i++)
                 //printf("\nBlock: %i\tLength: %li", i, (*tobject)->lengths[i]);
 }
 
@@ -181,22 +176,11 @@ struct histogram *hist_o_init(int keys_total)
         hobject->tdata = malloc(sizeof(struct transposed));
         hobject->inputlength = 0;
         hobject->hum = malloc(sizeof(struct humming));
-        hobject->scores = malloc(sizeof(struct lang));
         hobject->inputlength = 0;
         hobject->hum->keys_total = keys_total; // how many keylengths
         hobject->hum->keylength = (int *) malloc(keys_total * sizeof(int));
         hobject->hum->n_editdistance = (float *) malloc(keys_total * sizeof(float));
-        hobject->scores->testkey = (char *) malloc(1 * sizeof(char));
-        hobject->scores->unciphered = (char *) malloc(1 * sizeof(char));
-        hobject->scores->score = 0;
-        for(i = 0; i < 26; i++)
-                hobject->scores->scoreboard[i] = 0.0f;
-                                                                // the strings according each element
-                                                                //
-                                                                /* according length to input string
-                                                                 * since strlen() would crash on
-                                                                 * bit streams containing '\0's
-                                                                 */
+        hobject->testkey = (char *) malloc(sizeof(char));
         return hobject;
 }
 
@@ -210,12 +194,10 @@ int hist_o_destroy(struct histogram *hobject)
         free(hobject->tdata->lengths);
         free(hobject->tdata);
         free(hobject->data); 
-        free(hobject->scores->testkey);
-        free(hobject->scores->unciphered);
+        free(hobject->testkey);
         free(hobject->hum->keylength);
         free(hobject->hum->n_editdistance);
         free(hobject->hum);
-        free(hobject->scores);
         free(hobject);
         return 0;
 }

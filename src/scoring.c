@@ -52,7 +52,7 @@ void destroy_scores()
         scores.elements = 0;
 }
 
-void get_best()
+char get_best()
 {
         if(!scores.elements) {
                 printf("Error - no elements in score table\n");
@@ -66,7 +66,8 @@ void get_best()
                         highest = scores.score[c];
                 }
         }
-        printf("\nKey: %s - Text:\t%s", scores.key[index], scores.text[index]);
+        printf("\nKey: %s - Text:\t%s\n", scores.key[index], scores.text[index]);
+        return *scores.key[index];
 }
 
 void print_en_scores()
@@ -117,12 +118,31 @@ long get_score(char *input_string, long str_length, char *key, int delimiter, fl
                                 case ')':
                                 case '?':
                                 case '"':
-                                case '@':
                                 case '/':
                                 case '\\':
-                                        points += 0;
+                                        points -= 0;
+                                case '<':
+                                case '>':
+                                case '@':
+                                case '=':
+                                case 0x01:
+                                case 0x02:
+                                case 0x03:
+                                case 0x04:
+                                case 0x05:
+                                case 0x06:
+                                case 0x07:
+                                case 0x08:
+                                case 0x09:
+                                case 0x0b:
+                                case 0x0c:
+                                case 0x0d:
+                                case 0x0e:
+                                case 0x0f:
+                                case '~':
+                                        points -= 2;
                                 default:
-                                        points -= 5;
+                                        points -= 10;
                         }
                 }
         }
@@ -133,7 +153,8 @@ long get_score(char *input_string, long str_length, char *key, int delimiter, fl
                         points += 10;
                 }
         }
-        points += letters_counted;
+        if(letters_counted / str_length > 50)
+                points += 20;
         if(points > delimiter) {
                 if(prints) {
                         puts(input_string);
