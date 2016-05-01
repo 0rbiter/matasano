@@ -3,7 +3,7 @@ MKDIR_P = mkdir -p
 SRC_DIR = src/
 INC_DIR = include/
 BUILD_DIR = build/
-CFLAGS=-v -I$(INC_DIR) -O0 -fno-strict-aliasing -fno-omit-frame-pointer -g 
+CFLAGS=-v -O0 -fno-strict-aliasing -fno-omit-frame-pointer -g 
 #CFLAGS=-v -I$(INC_DIR) -O0 -fno-omit-frame-pointer -g 
 #CFLAGS=-v -O0 -g 
 

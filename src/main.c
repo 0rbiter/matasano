@@ -18,10 +18,11 @@ int main(int argc, char **argv)
 { /*
         s1c1();
         s1c2();
-    */    
+        
         s1c3();
         s1c4();
-    //    s1c5();
+        s1c5();
+        */
 
         char *filename6 = "/home/orbiter/matasano/src/challenge6keys.txt";
         struct file_o *filebuffer6 = readBytes(filename6);
@@ -30,7 +31,6 @@ int main(int argc, char **argv)
         char *wholestring = getString(&filebuffer6);
         long length;
         char *STR_XOR = malloc(1);
-        char *COMPLETE_XOR = malloc(1);
         int keys_total = 3;
         char *tempchars;
         struct histogram *hist = hist_o_init(keys_total);
@@ -65,6 +65,7 @@ int main(int argc, char **argv)
         xor_bytes_to_string(&STR_XOR, hist->data, length, hist->testkey, 5);
         printf("\n\n\n");
         puts(STR_XOR);
+        free(STR_XOR);
         free(wholestring);
         free(b64string);
         file_o_destroy(filebuffer6);
