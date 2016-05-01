@@ -3,10 +3,6 @@
 #include "headerfiles.h"
 #endif
 
-/* set1.ch */
-#ifndef SET1_C
-#define SET1_C
-
 void separate()
 {
         puts("\n\n###############################################################################");
@@ -139,8 +135,6 @@ void s1c5() {
 
         free(xor_hexstring);
         free(xor_string2);
-        
         separate();
 }
 
-#endif /* !SET1.C */

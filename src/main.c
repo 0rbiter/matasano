@@ -30,7 +30,7 @@ int main(int argc, char **argv)
         file_o_init(filebuffer6);
         char *b64string = malloc(1);
         char *wholestring = getString(&filebuffer6);
-        long c, length;
+        long length;
         char *STR_XOR = malloc(1);
         char *COMPLETE_XOR = malloc(1);
         int keys_total = 3;
@@ -46,7 +46,7 @@ int main(int argc, char **argv)
                 exit(-1);
         int x;
         char ENCCHAR[] = "A\0";
-        for(c = 0; c < hist->tdata->elements; c++) {
+        for(long c = 0; c < hist->tdata->elements; c++) {
                 for(x=0; x < 256; x++) {
                         ENCCHAR[0] = x;
                         memset(STR_XOR, hist->tdata->elements, 0);
