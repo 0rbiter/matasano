@@ -1,19 +1,17 @@
 #ifndef STANDARD_LIBS
 #define STANDARD_LIBS
-#include "headerfiles.h"
+#include "../include/headerfiles.h"
 #endif
-
 
 #ifndef PROJECT_LIBS
 #define PROJECT_LIBS
-#include "cryptodata.h"
-#include "filehandler.c"
-#include "cryptodef.c"
-#include "scoring.c"
-#include "set1.c"
-#include "heapsort.c"
-#include "histogram.c"
-#include "tools.c"
+#include "../include/heapsort.h"
+#include "../include/histogram.h"
+#include "../include/set1.h"
+#include "../include/cryptodata.h"
+#include "../include/cryptodef.h"
+#include "../include/filehandler.h"
+#include "../include/scoring.h"
 #endif 
 
 int main(int argc, char **argv)

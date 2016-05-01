@@ -1,11 +1,15 @@
 #ifndef STANDARD_LIBS
 #define STANDARD_LIBS
-#include "headerfiles.h"
+#include "../include/headerfiles.h"
 #endif
 
-/* cryptodef.h */
-#ifndef CRYPTODEF_H
-#define CRYPTODEF_H
+#ifndef PROJECT_LIBS
+#define PROJECT_LIBS
+#include "../include/cryptodata.h"
+#endif
+/* cryptodef.c */
+#ifndef CRYPTODEF_C
+#define CRYPTODEF_C
 
 void stringToUpper(char *buffer)
 {
@@ -347,4 +351,4 @@ void xor_hexstrings(char *output, char *input1, char *input2)
 
 }
 
-#endif /* !CRYPTODEF_H */
+#endif /* !CRYPTODEF_C */

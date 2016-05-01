@@ -1,7 +1,15 @@
 #ifndef STANDARD_LIBS
 #define STANDARD_LIBS
-#include "headerfiles.h"
+#include "../include/headerfiles.h"
 #endif
+
+#ifndef PROJECT_LIBS
+#define PROJECT_LIBS
+#include "../include/cryptodata.h"
+#include "../include/cryptodef.h"
+#include "../include/filehandler.h"
+#include "../include/scoring.h"
+#endif 
 
 void separate()
 {

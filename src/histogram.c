@@ -1,19 +1,12 @@
 #ifndef STANDARD_LIBS
 #define STANDARD_LIBS
-#include "headerfiles.h"
+#include "../include/headerfiles.h"
 #endif
 
-#ifndef PROJECT_LIBS
-#define PROJECT_LIBS
-#include "cryptodata.h"
-#include "filehandler.c"
-#include "cryptodef.c"
-#include "scoring.c"
-#include "set1.c"
-#include "heapsort.c"
-#include "tools.c"
-#endif 
-
+#ifndef HEAP_H
+#define HEA_H
+#include "../include/heapsort.h"
+#endif
 /* histogram.c */
 #ifndef HISTOGRAM_C
 #define HISTOGRAM_C

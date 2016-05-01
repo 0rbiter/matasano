@@ -1,11 +1,11 @@
 #ifndef STANDARD_LIBS
 #define STANDARD_LIBS
-#include "headerfiles.h"
+#include "../include/headerfiles.h"
 #endif
 
-/* filehandler.h */
-#ifndef FILEHANDLER_H
-#define FILEHANDLER_H
+/* filehandler.c */
+#ifndef FILEHANDLER_C
+#define FILEHANDLER_C
 
 static long horizontal_bufsize = 64;
 static long vertical_bufsize = 512;
@@ -202,4 +202,4 @@ long getFilesize(char *path)
         return sz;
 }
 
-#endif /* !FILEHANDLER_H */
+#endif /* !FILEHANDLER_C */
