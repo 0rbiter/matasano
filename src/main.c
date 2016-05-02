@@ -70,6 +70,9 @@ int main(int argc, char **argv)
         free(b64string);
         file_o_destroy(filebuffer6);
         hist_o_destroy(hist); 
-
+        double tempf = 0;
+        for(x = 0; x < 26; x++)
+                tempf += pow((double) (letterscore_en[x] / 100.0), 2.0);
+        printf("\n%0.5f\n\n", tempf);
 }
 

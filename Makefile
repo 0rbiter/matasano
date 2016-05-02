@@ -3,9 +3,8 @@ MKDIR_P = mkdir -p
 SRC_DIR = src/
 INC_DIR = include/
 BUILD_DIR = build/
-CFLAGS=-v -O0 -fno-strict-aliasing -fno-omit-frame-pointer -g 
-#CFLAGS=-v -I$(INC_DIR) -O0 -fno-omit-frame-pointer -g 
-#CFLAGS=-v -O0 -g 
+#CFLAGS=-lm -v -O0 -fno-strict-aliasing -fno-omit-frame-pointer -g 
+CFLAGS=-v -O0 -g 
 
 .PHONY: directories
 .PHONY: clean
@@ -25,10 +24,10 @@ dir:
 	    mkdir -p $(BUILD_DIR)
 
 $(BUILD_DIR)/$(EXECUTABLE): $(OBJECTS)
-	    $(CC) $^ -o $@
+	    $(CC) -lm $^ -o $@
 
 $(OBJECTS): $(BUILD_DIR)/%.o : $(SRC_DIR)/%.c
-	    $(CC) $(FLAGS) $< -c -o $@
+	    $(CC) $(CFLAGS) $< -c -o $@
 
 clean:
 	rm -f $(SRC_DIR)*.o
