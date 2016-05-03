@@ -93,7 +93,7 @@ long humming_distance(char *word1, char *word2, long length)
                         word[i] >>= 1;
                 }
         }
-        free(word);
+        xfree(word);
         word = NULL;
         return distance;
 }
@@ -132,9 +132,9 @@ int get_keylength(struct histogram **hobject, int maxlength, char *data, long le
                 hd = humming_distance(first, second, i); 
                 distances->n_editdistance[i-2] = hd / i;
                 distances->keylength[i-2] = i;
-                free(first);
+                xfree(first);
                 first = NULL;
-                free(second);
+                xfree(second);
                 second = NULL;
         }
         // min heapsort the editdistances
@@ -151,13 +151,13 @@ int get_keylength(struct histogram **hobject, int maxlength, char *data, long le
                printf("\nKeylength: %i\tEditdistance %0.5f", (*hobject)->hum->keylength[kctr],
                                                         (*hobject)->hum->n_editdistance[kctr]);
         }
-        free(distances->keylength);
+        xfree(distances->keylength);
         distances->keylength = NULL;
-        free(distances->n_editdistance);
+        xfree(distances->n_editdistance);
         distances->n_editdistance = NULL;
-        free(distances);
+        xfree(distances);
         distances = NULL;
-        free(sorted_ed);
+        xfree(sorted_ed);
         sorted_ed = NULL;
         return min_distance;
 }
@@ -184,25 +184,25 @@ int hist_o_destroy(struct histogram *hobject)
         long counter;
         int i;
         for(i = 0; i < hobject->tdata->elements; i++)
-                free(hobject->tdata->blocks[i]);
+                xfree(hobject->tdata->blocks[i]);
         hobject->tdata->blocks[i] = NULL;
-        free(hobject->tdata->blocks);
+        xfree(hobject->tdata->blocks);
         hobject->tdata->blocks = NULL;
-        free(hobject->tdata->lengths);
+        xfree(hobject->tdata->lengths);
         hobject->tdata->lengths = NULL;
-        free(hobject->tdata);
+        xfree(hobject->tdata);
         hobject->tdata = NULL;
-        free(hobject->data); 
+        xfree(hobject->data); 
         hobject->data = NULL;
-        free(hobject->testkey);
+        xfree(hobject->testkey);
         hobject->testkey = NULL;
-        free(hobject->hum->keylength);
+        xfree(hobject->hum->keylength);
         hobject->hum->keylength = NULL;
-        free(hobject->hum->n_editdistance);
+        xfree(hobject->hum->n_editdistance);
         hobject->hum->n_editdistance = NULL;
-        free(hobject->hum);
+        xfree(hobject->hum);
         hobject->hum = NULL;
-        free(hobject);
+        xfree(hobject);
         hobject = NULL;
         return 0;
 }

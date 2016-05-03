@@ -57,14 +57,11 @@ int main(int argc, char **argv)
         xor_bytes_to_string(&STR_XOR, hist->data, length, hist->testkey, 5);
         printf("\n\n\n");
         puts(STR_XOR);
-        free(STR_XOR);
-        free(wholestring);
-        free(b64string);
+        xfree(STR_XOR);
+        xfree(wholestring);
+        xfree(b64string);
         file_o_destroy(filebuffer6);
         hist_o_destroy(hist); 
-        STR_XOR = NULL;
-        wholestring = NULL;
-        b64string = NULL;
         double tempf = 0;
         for(x = 0; x < 26; x++)
                 tempf += pow((double) (letterscore_en[x] / 100.0), 2.0);

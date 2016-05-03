@@ -201,12 +201,9 @@ long b64_decode_string(char *output, char *input, long inputlength)
         }
         memcpy(output, xobject->ascii_string, inputlength/4*3);
         output[inputlength/4*3] = '\0';
-        free(xobject->b64_string);
-        xobject->b64_string = NULL;
-        free(xobject->ascii_string);
-        xobject->ascii_string = NULL;
-        free(xobject);
-        xobject = NULL;
+        xfree(xobject->b64_string);
+        xfree(xobject->ascii_string);
+        xfree(xobject);
         return inputlength/4*3;
 }
 
@@ -226,10 +223,8 @@ void hexstring_encode_bytes(unsigned char *output, char *input, long inputlength
         dobject->bytebuffer = xrealloc(dobject->bytebuffer, dobject->inputlength/2);
         hexstr_to_bytes(dobject->bytebuffer, dobject->input);
         memcpy(output, dobject->bytebuffer, inputlength/2);
-        free(dobject->bytebuffer);
-        dobject->bytebuffer = NULL;
-        free(dobject);
-        dobject = NULL;
+        xfree(dobject->bytebuffer);
+        xfree(dobject);
 }
 
 // ENCODE HEX STRING TO BYTECODE
@@ -248,12 +243,9 @@ void hexstring_encode_b64(char *output, char *input, long inputlength)
         hexstr_to_bytes(dobject->bytebuffer, dobject->input);
         bytes_to_b64(dobject->b64_string, dobject->bytebuffer, b64length(dobject->input), dobject->inputlength/2);
         memcpy(output, dobject->b64_string, b64length(dobject->input));
-        free(dobject->bytebuffer);
-        dobject->bytebuffer = NULL;
-        free(dobject->b64_string);
-        dobject->b64_string = NULL;
-        free(dobject);
-        dobject = NULL;
+        xfree(dobject->bytebuffer);
+        xfree(dobject->b64_string);
+        xfree(dobject);
 }
 
 void equal_xor_hexstrings(unsigned char* output, char *input1, char *input2, long length)
@@ -267,10 +259,8 @@ void equal_xor_hexstrings(unsigned char* output, char *input1, char *input2, lon
 
         for(c=0; c < length/2; c++)
                 output[c] = bytes_input1[c] ^ bytes_input2[c];
-        free(bytes_input1);
-        bytes_input1 = NULL;
-        free(bytes_input2);
-        bytes_input2 = NULL;
+        xfree(bytes_input1);
+        xfree(bytes_input2);
 }
 
 int xor_bytes_to_string(char **output, char *input1, long longer, char *input2, long shorter)
@@ -308,8 +298,7 @@ void xor_strings(char *output, char *input1, char *input2)
         }
         temp[longer] = '\0';
         memcpy(output, temp, longer+1);
-        free(temp);
-        temp = NULL;
+        xfree(temp);
 
 }
 
@@ -328,12 +317,9 @@ void xor_hexstrings(char *output, char *input1, char *input2)
 
                 memcpy(output, output_buffer->b64_string, b64length(input1));
 
-                free(output_buffer->bytebuffer);
-                output_buffer->bytebuffer = NULL;
-                free(output_buffer->b64_string);
-                output_buffer->b64_string = NULL;
-                free(output_buffer);
-                output_buffer = NULL;
+                xfree(output_buffer->bytebuffer);
+                xfree(output_buffer->b64_string);
+                xfree(output_buffer);
                 return;
         }
         else

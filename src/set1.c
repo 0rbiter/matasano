@@ -31,10 +31,8 @@ void s1c1() {
         char *decoded_string = xcalloc(strlen(b64HS)/4*3+1, 1);
         b64_decode_string(decoded_string, b64HS, strlen(b64HS));
         puts(decoded_string);
-        free(decoded_string);
-        decoded_string = NULL;
-        free(b64HS);
-        b64HS = NULL;
+        xfree(decoded_string);
+        xfree(b64HS);
 }
 
 void s1c2() {
@@ -55,10 +53,8 @@ void s1c2() {
         char *xor_string = xcalloc(strlen(xor_b64), 1);
         b64_decode_string(xor_string, xor_b64, strlen(xor_b64));
         puts(xor_string);
-        free(xor_b64);
-        xor_b64 = NULL;
-        free(xor_string);
-        xor_string = NULL;
+        xfree(xor_b64);
+        xfree(xor_string);
 }
 
 void s1c3()
@@ -83,10 +79,8 @@ void s1c3()
         }
         get_best();
         destroy_scores();
-        free(NEWSTRING);
-        NEWSTRING = NULL;
-        free(STRING3);
-        STRING3 = NULL;
+        xfree(NEWSTRING);
+        xfree(STRING3);
 }
 
 
@@ -121,10 +115,8 @@ void s1c4()
         get_best();
         destroy_scores();
         file_o_destroy(buffer1);
-        free(STR_STRING);
-        STR_STRING = NULL;
-        free(STR_XOR); 
-        STR_XOR = NULL;
+        xfree(STR_STRING);
+        xfree(STR_XOR); 
 }
 
 
@@ -149,10 +141,8 @@ void s1c5() {
         puts("Solution:");
         puts(xor_hexstring);
 
-        free(xor_hexstring);
-        xor_hexstring = NULL;
-        free(xor_string2);
-        xor_string2 = NULL;
+        xfree(xor_hexstring);
+        xfree(xor_string2);
         separate();
 }
 

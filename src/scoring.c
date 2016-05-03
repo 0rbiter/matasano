@@ -47,18 +47,18 @@ void destroy_scores()
 {
         long c;
         for(c = 0; c < scores.elements; c++) {
-                free(scores.text[c]);
+                xfree(scores.text[c]);
                 scores.text[c] = NULL;
-                free(scores.key[c]);
+                xfree(scores.key[c]);
                 scores.key[c] = NULL;
         }
-        free(scores.text);
+        xfree(scores.text);
         scores.text = NULL;
-        free(scores.key);
+        xfree(scores.key);
         scores.key = NULL;
-        free(scores.score);
+        xfree(scores.score);
         scores.score = NULL;
-        free(scores.length);
+        xfree(scores.length);
         scores.length = NULL;
         scores.length = NULL,
         scores.score = NULL,

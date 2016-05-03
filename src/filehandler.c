@@ -49,14 +49,11 @@ int file_o_destroy(struct file_o *obj)
 {
         long i = 0;
         while(obj->length[i] != -1) {
-                free(obj->buffer.i[i++]);
+                xfree(obj->buffer.i[i++]);
         }
-        free(obj->buffer.i);
-        obj->buffer.i = NULL;
-        free(obj->length);
-        obj->length = NULL;
-        free(obj);
-        obj = NULL;
+        xfree(obj->buffer.i);
+        xfree(obj->length);
+        xfree(obj);
         return 0;
 }
 
@@ -153,7 +150,7 @@ struct file_o *read_bytes(char *filename)
                 }
         }
 
-        free(buffer[vertical]);
+        xfree(buffer[vertical]);
         buffer[vertical] = NULL;
         struct file_o *result = (struct file_o *) xmalloc(sizeof(struct file_o));
         result->length = linelengthlist;
