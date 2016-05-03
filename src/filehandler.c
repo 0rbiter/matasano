@@ -90,17 +90,17 @@ struct file_o *readBytes(char *filename)
         linelengthlist[0] = 0;
         while((buf_element = fgetc(fp)) != EOF) {
                 buffer[vertical][horizontal] = buf_element;
-                // condition for vertical realloc (new list element)
+                // condition for vertical xrealloc (new list element)
                 if(buffer[vertical][horizontal] == '\0' || buffer[vertical][horizontal] == '\n') {
                         buffer[vertical][horizontal] = '\0';
                         if(vertical % vertical_bufsize <= 1) {
                                 // allocate vertical (# of elements in address list)
-                                new_buffer = (unsigned char **) realloc(buffer, (vertical+vertical_bufsize+2)*sizeof(unsigned char*));
+                                new_buffer = (unsigned char **) xrealloc(buffer, (vertical+vertical_bufsize+2)*sizeof(unsigned char*));
                                 if(new_buffer == NULL)
                                         exit(-1);
                                 else {
                                         buffer = new_buffer;
-                                        new_lll = (long *) realloc(linelengthlist, (vertical+vertical_bufsize+2)*sizeof(long));
+                                        new_lll = (long *) xrealloc(linelengthlist, (vertical+vertical_bufsize+2)*sizeof(long));
                                         if(new_lll == NULL)
                                                 exit(-1);
                                         else {
@@ -115,7 +115,7 @@ struct file_o *readBytes(char *filename)
                 // create space for a new char
                 // will be buffer increments later on!
                 if(horizontal % horizontal_bufsize <= 1) {
-                        new_line = (unsigned char *) realloc(buffer[vertical], (horizontal+horizontal_bufsize+2)*sizeof(unsigned char));
+                        new_line = (unsigned char *) xrealloc(buffer[vertical], (horizontal+horizontal_bufsize+2)*sizeof(unsigned char));
                         if(new_line == NULL)
                                 exit(-1);
                         else {
@@ -132,7 +132,7 @@ struct file_o *readBytes(char *filename)
         // resize alloc'd buffer to needed space
         // first: cleanup all pre-alloc'd lines
         for(y = 0; y < (vertical+1); y++) {
-                new_line = (unsigned char *) realloc(buffer[y], (linelengthlist[y]+2)*sizeof(unsigned char));
+                new_line = (unsigned char *) xrealloc(buffer[y], (linelengthlist[y]+2)*sizeof(unsigned char));
                 if(new_line == NULL)
                         exit(-1);
                 else {
@@ -140,12 +140,12 @@ struct file_o *readBytes(char *filename)
                 }
         }
         // second: resize list of lines
-        new_buffer = (unsigned char **) realloc(buffer, (vertical+1)*sizeof(unsigned char*));
+        new_buffer = (unsigned char **) xrealloc(buffer, (vertical+1)*sizeof(unsigned char*));
         if(new_buffer == NULL)
                 exit(-1);
         else {
                 buffer = new_buffer;
-                new_lll = (long *) realloc(linelengthlist, (vertical+1)*sizeof(long));
+                new_lll = (long *) xrealloc(linelengthlist, (vertical+1)*sizeof(long));
                 if(new_lll == NULL)
                         exit(-1);
                 else {

@@ -52,7 +52,7 @@ void transpose(struct transposed **tobject, char **inputstring, long length, int
         (*tobject)->blocks = xmalloc(length/divisor * sizeof(char *));
         //printf("Length: %li\tDivisor: %i - %li\n", length, divisor, length/divisor);
         for(i = 0; i < divisor; i++) {
-                (*tobject)->blocks[i] = calloc(length/divisor, sizeof(char));
+                (*tobject)->blocks[i] = xcalloc(length/divisor, sizeof(char));
                 (*tobject)->lengths[i] = length / divisor;
         }
         o = 0;
@@ -98,18 +98,13 @@ long humming_distance(char *word1, char *word2, long length)
         return distance;
 }
 
-int get_keylength(struct histogram **hobject, int maxlength, 
-                        char *data, long length, int keys_total)
+int get_keylength(struct histogram **hobject, int maxlength, char *data, long length, int keys_total)
 {
         if(maxlength < 2)
                 return -1;
         if(length/2 < maxlength)
                 maxlength = length/2;
-        char *temp = realloc((*hobject)->data, length);
-        if(temp != NULL)
-                (*hobject)->data = temp;
-        else
-                exit(-1);
+        (*hobject)->data = xrealloc((*hobject)->data, length);
         int temp_distance = 0;
         int kctr = 0;
         int i; // counter variable for different key lengths

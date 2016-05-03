@@ -24,11 +24,11 @@ void s1c1() {
         printf("\nChallenge 1\nHexadecimal to convert to Base64:\n");
 	puts(HEXSTRING);
     	printf("\nSolution:\n");
-        char *b64HS = (char*) calloc(b64length(HEXSTRING), 1);
+        char *b64HS = (char*) xcalloc(b64length(HEXSTRING), 1);
         hexstring_encode_b64(b64HS, HEXSTRING, strlen(HEXSTRING));
         puts(b64HS);
         puts("Convert to ASCII:");
-        char *decoded_string = calloc(strlen(b64HS)/4*3+1, 1);
+        char *decoded_string = xcalloc(strlen(b64HS)/4*3+1, 1);
         b64_decode_string(decoded_string, b64HS, strlen(b64HS));
         puts(decoded_string);
         free(decoded_string);
@@ -48,11 +48,11 @@ void s1c2() {
         puts(HEXSTRING1);
         puts(HEXSTRING2);
         puts("\nXOR'd:");
-        char *xor_b64 = calloc(b64length(HEXSTRING1), 1);
+        char *xor_b64 = xcalloc(b64length(HEXSTRING1), 1);
         xor_hexstrings(xor_b64, HEXSTRING1, HEXSTRING2);
         puts(xor_b64);
         puts("\nBase64 decoded:");
-        char *xor_string = calloc(strlen(xor_b64), 1);
+        char *xor_string = xcalloc(strlen(xor_b64), 1);
         b64_decode_string(xor_string, xor_b64, strlen(xor_b64));
         puts(xor_string);
         free(xor_b64);
@@ -141,8 +141,8 @@ void s1c5() {
         char *STR_KEY5 = "ICE";
         printf("Key: %s\n", STR_KEY5);
 
-        char *xor_string2 = calloc(strlen(STRING4)+1, 1);
-        char *xor_hexstring = calloc(strlen(STRING4)*2+1, 1);
+        char *xor_string2 = xcalloc(strlen(STRING4)+1, 1);
+        char *xor_hexstring = xcalloc(strlen(STRING4)*2+1, 1);
         //xor_strings(xor_string2, STRING4, STR_KEY5);
         xor_bytes_to_string(&xor_string2, STRING4, strlen(STRING4), STR_KEY5, 3);
         bitsToHexchar(xor_hexstring, xor_string2);

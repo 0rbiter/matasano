@@ -28,14 +28,14 @@ static struct {
 
 void add_score(char *text, long length, char *key, long score) 
 {
-        scores.length =                 realloc(scores.length, (scores.elements+1) * sizeof(long));
-        scores.score =                  realloc(scores.score, (scores.elements+1) * sizeof(long));
-        scores.text =                   realloc(scores.text, (scores.elements+1) * sizeof(char *));
+        scores.length =                 xrealloc(scores.length, (scores.elements+1) * sizeof(long));
+        scores.score =                  xrealloc(scores.score, (scores.elements+1) * sizeof(long));
+        scores.text =                   xrealloc(scores.text, (scores.elements+1) * sizeof(char *));
         scores.text[scores.elements] =  xmalloc(1);
-        scores.text[scores.elements] =  realloc(scores.text[scores.elements], (length+1) * sizeof(char));
-        scores.key =                    realloc(scores.key, (scores.elements+1) * sizeof(char *));
+        scores.text[scores.elements] =  xrealloc(scores.text[scores.elements], (length+1) * sizeof(char));
+        scores.key =                    xrealloc(scores.key, (scores.elements+1) * sizeof(char *));
         scores.key[scores.elements] =   xmalloc(1);
-        scores.key[scores.elements] =   realloc(scores.key[scores.elements], 2 * sizeof(char));
+        scores.key[scores.elements] =   xrealloc(scores.key[scores.elements], 2 * sizeof(char));
         scores.length[scores.elements] = length;
         scores.score[scores.elements] = score;
         memcpy(scores.text[scores.elements], text, length+1);

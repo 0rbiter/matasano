@@ -107,12 +107,7 @@ void bitsToHexchar(char *output, char *input)
 
 long active_b64_decode_string(char **output, char *input, long inputlength)
 {
-        char *temp;
-        temp = (char *) realloc(*output, (inputlength/4*3+1) * sizeof(char));
-        if(temp != NULL) 
-                *output = temp;
-        else
-                exit(-1);
+        *output = (char *) xrealloc(*output, (inputlength/4*3+1) * sizeof(char));
         if(inputlength % 4 > 0) {
                 printf("Error, inputlength is not suitable for base64 decoding: %li", inputlength);
                 exit(-1);
@@ -134,12 +129,7 @@ long hexstringToString(char **buffer, char *input)
                 printf("Error - string length is odd. 2 hex needed to fill a byte!");
                 exit(-1);
         }
-        char *tmp;
-        tmp = (char *) realloc(*buffer, (strlen(input)/2+1) * sizeof(char));
-        if(tmp != NULL)
-                *buffer = tmp;
-        else
-                exit(-1);
+        *buffer = (char *) xrealloc(*buffer, (strlen(input)/2+1) * sizeof(char));
         long a;
         long i = 0;
         for(a = 0; a < strlen(input); a+=2) {
@@ -194,8 +184,8 @@ long b64_decode_string(char *output, char *input, long inputlength)
 {
         struct base64 *xobject = xmalloc(sizeof(struct base64));
         xobject->inputlength = inputlength;
-        xobject->b64_string = (char*) calloc(xobject->inputlength+1, 1);
-        xobject->ascii_string = (unsigned char*) calloc(xobject->inputlength/4*3, 1);
+        xobject->b64_string = (char*) xcalloc(xobject->inputlength+1, 1);
+        xobject->ascii_string = (unsigned char*) xcalloc(xobject->inputlength/4*3, 1);
         memcpy(xobject->b64_string, input, inputlength);
         if(inputlength % 4 > 0) {
                 printf("Error, inputlength is not suitable for base64 decoding: %li", inputlength);
@@ -232,9 +222,8 @@ void hexstring_encode_bytes(unsigned char *output, char *input, long inputlength
         struct base64 *dobject = xmalloc(sizeof(struct base64)); 
         dobject->inputlength = strlen(input);
         dobject->input = input;
-        dobject->bytebuffer = (unsigned char*) calloc(dobject->inputlength/2, 1);
-        //dobject->b64_string = (char*) calloc(b64length(dobject->input), 1);
-        dobject->bytebuffer = realloc(dobject->bytebuffer, dobject->inputlength/2);
+        dobject->bytebuffer = (unsigned char*) xcalloc(dobject->inputlength/2, 1);
+        dobject->bytebuffer = xrealloc(dobject->bytebuffer, dobject->inputlength/2);
         hexstringToBytes(dobject->bytebuffer, dobject->input);
         memcpy(output, dobject->bytebuffer, inputlength/2);
         free(dobject->bytebuffer);
@@ -250,20 +239,15 @@ void hexstring_encode_b64(char *output, char *input, long inputlength)
                 printf("too short");
                 exit(-1);
         }
-        
         struct base64 *dobject = xmalloc(sizeof(struct base64)); 
         dobject->inputlength = strlen(input);
         dobject->input = input;
-        dobject->bytebuffer = (unsigned char*) calloc(dobject->inputlength/2, 1);
-        dobject->b64_string = (char*) calloc(b64length(dobject->input), 1);
-
-
-        dobject->bytebuffer = realloc(dobject->bytebuffer, dobject->inputlength/2);
+        dobject->bytebuffer = (unsigned char*) xcalloc(dobject->inputlength/2, 1);
+        dobject->b64_string = (char*) xcalloc(b64length(dobject->input), 1);
+        dobject->bytebuffer = xrealloc(dobject->bytebuffer, dobject->inputlength/2);
         hexstringToBytes(dobject->bytebuffer, dobject->input);
         bytesToB64(dobject->b64_string, dobject->bytebuffer, b64length(dobject->input), dobject->inputlength/2);
-
         memcpy(output, dobject->b64_string, b64length(dobject->input));
-
         free(dobject->bytebuffer);
         dobject->bytebuffer = NULL;
         free(dobject->b64_string);
@@ -275,8 +259,8 @@ void hexstring_encode_b64(char *output, char *input, long inputlength)
 void equal_xor_hexstrings(unsigned char* output, char *input1, char *input2, long length)
 {
         long c;
-        unsigned char *bytes_input1 = calloc(length/2, 1);
-        unsigned char *bytes_input2 = calloc(length/2, 1);
+        unsigned char *bytes_input1 = xcalloc(length/2, 1);
+        unsigned char *bytes_input2 = xcalloc(length/2, 1);
 
         hexstring_encode_bytes(bytes_input1, input1, length);
         hexstring_encode_bytes(bytes_input2, input2, length);
@@ -294,15 +278,7 @@ int xor_bytes_to_string(char **output, char *input1, long longer, char *input2, 
         long c;
         if(longer < shorter)
                 return 0;
-        *output = (char *) realloc(*output, (longer+1) * sizeof(char));
-        if(output == NULL)
-                exit(-1);
-        /*char *tmp;
-        tmp = (char *) realloc(*output, (longer+1) * sizeof(char));
-        if(tmp != NULL)
-                *output = tmp;
-        else
-                exit(-1);*/
+        *output = (char *) xrealloc(*output, (longer+1) * sizeof(char));
         long shortcounter=0;
         for(c=0; c < longer; c++) {
                 (*output)[c] = input1[c] ^ input2[shortcounter];
@@ -321,7 +297,7 @@ void xor_strings(char *output, char *input1, char *input2)
 
         if(longer < shorter)
                 exit(-1);
-        char *temp = calloc(longer+1, 1);
+        char *temp = xcalloc(longer+1, 1);
 
         long shortcounter=0;
         for(c=0; c < longer; c++) {
@@ -345,8 +321,8 @@ void xor_hexstrings(char *output, char *input1, char *input2)
 
         if(strlen(input1) == strlen(input2)) {
                 long length = strlen(input1);
-                output_buffer->bytebuffer = (unsigned char*) calloc(length/2, 1);
-                output_buffer->b64_string = (char*) calloc(b64length(input1), 1);
+                output_buffer->bytebuffer = (unsigned char*) xcalloc(length/2, 1);
+                output_buffer->b64_string = (char*) xcalloc(b64length(input1), 1);
                 equal_xor_hexstrings(output_buffer->bytebuffer, input1, input2, length);
                 bytesToB64(output_buffer->b64_string, output_buffer->bytebuffer, b64length(input1), length/2);
 

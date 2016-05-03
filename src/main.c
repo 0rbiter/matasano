@@ -33,16 +33,11 @@ int main(int argc, char **argv)
         long length;
         char *STR_XOR = xmalloc(1);
         int keys_total = 3;
-        char *tempchars;
         struct histogram *hist = hist_o_init(keys_total);
         length = active_b64_decode_string(&b64string, wholestring, strlen(wholestring));
         get_keylength(&hist, 20, b64string, length, keys_total);
         transpose(&hist->tdata, &hist->data, length, hist->hum->keylength[0]);
-        tempchars = realloc(hist->testkey, (hist->tdata->elements + 1) * sizeof(char));
-        if(tempchars != NULL)
-                hist->testkey = tempchars;
-        else
-                return -1;
+        hist->testkey = xrealloc(hist->testkey, (hist->tdata->elements + 1) * sizeof(char));
         int x;
         char ENCCHAR[] = "A\0";
         for(long c = 0; c < hist->tdata->elements; c++) {
@@ -58,11 +53,7 @@ int main(int argc, char **argv)
         hist->testkey[hist->tdata->elements] = '\0';
         printf("\n");
         puts(hist->testkey);
-        tempchars = realloc(STR_XOR, (hist->inputlength + 1) * sizeof(char));
-        if(tempchars != NULL)
-                STR_XOR = tempchars;
-        else
-                return -1;
+        STR_XOR = xrealloc(STR_XOR, (hist->inputlength + 1) * sizeof(char));
         xor_bytes_to_string(&STR_XOR, hist->data, length, hist->testkey, 5);
         printf("\n\n\n");
         puts(STR_XOR);
@@ -78,16 +69,5 @@ int main(int argc, char **argv)
         for(x = 0; x < 26; x++)
                 tempf += pow((double) (letterscore_en[x] / 100.0), 2.0);
         printf("\n%0.5f\n\n", tempf);
-        /*
-        char *chars = xxmalloc(2);
-        chars[0] = 'T';
-        puts(chars);
-        chars = xrealloc(chars, 4);
-        chars[1] = 'A';
-        chars[2] = 'B';
-        chars[3] = '\0';
-        printf("\nStr: %s\n", chars);
-        puts(chars);
-        printf("\n?????"); */
 }
 
