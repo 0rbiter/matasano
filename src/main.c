@@ -5,6 +5,7 @@
 
 #ifndef PROJECT_LIBS
 #define PROJECT_LIBS
+#include "../include/tools.h"
 #include "../include/heapsort.h"
 #include "../include/histogram.h"
 #include "../include/set1.h"
@@ -77,5 +78,16 @@ int main(int argc, char **argv)
         for(x = 0; x < 26; x++)
                 tempf += pow((double) (letterscore_en[x] / 100.0), 2.0);
         printf("\n%0.5f\n\n", tempf);
+        /*
+        char *chars = xmalloc(2);
+        chars[0] = 'T';
+        puts(chars);
+        chars = xrealloc(chars, 4);
+        chars[1] = 'A';
+        chars[2] = 'B';
+        chars[3] = '\0';
+        printf("\nStr: %s\n", chars);
+        puts(chars);
+        printf("\n?????"); */
 }
 

@@ -4,7 +4,7 @@ augroup project
 augroup END
 
 let &path.="src/include,/usr/include/AL,"
-set makeprg=make\ all\ -j4
+set makeprg=make\ clean&&make\ all\ -j4
 nnoremap <F4> :make!<cr>
 " ! prevents vim from jumping to first error found
 nnoremap <F5> :!./build/main

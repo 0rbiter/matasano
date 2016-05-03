@@ -1,6 +1,6 @@
-/* heapsort.c */
-#ifndef HEAPSORT_C
-#define HEAPSORT_C
+/* heapsort.h */
+#ifndef HEAPSORT_H
+#define HEAPSORT_H
 struct s_4byte {
         union {
                 float _float;
@@ -17,4 +17,4 @@ long heap_right(long index);
 void heapify(float **heap, long heapsize, long index);
 void buildHeap(float **heap, long heapsize);
 void heapsort(float **heap, long heapsize);
-#endif /* !heapsort.c */
+#endif /* !heapsort.h */
