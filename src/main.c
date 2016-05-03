@@ -16,10 +16,10 @@
 #endif 
 
 int main(int argc, char **argv)
-{ /*
+{
+        /*
         s1c1();
         s1c2();
-        
         s1c3();
         s1c4();
         s1c5();
