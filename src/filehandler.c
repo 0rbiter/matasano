@@ -63,27 +63,13 @@ struct file_o *read_bytes(char *filename)
         if(!fp)
                 exit(-1);
         int buf_element;
-
         long vertical = 0;
         long horizontal = 0;
-        unsigned char **new_buffer = NULL;
-        unsigned char *new_line = NULL;
-
         unsigned char **buffer = NULL; 
         buffer = (unsigned char **) xmalloc(1 * sizeof(unsigned char *));
         buffer[vertical] = (unsigned char *) xmalloc(1 * sizeof(unsigned char));
         buffer[vertical][horizontal] = 0;
-        if(buffer[0] == NULL)
-                exit(-1);
-        if(buffer == NULL)
-                exit(-1);
-        long *new_lll = NULL;
-        long *linelengthlist = NULL;
-        new_lll = (long *) xmalloc(1*sizeof(long));
-        if(new_lll == NULL)
-                exit(-1);
-        else
-                linelengthlist = new_lll;
+        long *linelengthlist = (long *) xmalloc(1*sizeof(long));
         linelengthlist[0] = 0;
         while((buf_element = fgetc(fp)) != EOF) {
                 buffer[vertical][horizontal] = buf_element;
@@ -92,18 +78,8 @@ struct file_o *read_bytes(char *filename)
                         buffer[vertical][horizontal] = '\0';
                         if(vertical % vertical_bufsize <= 1) {
                                 // allocate vertical (# of elements in address list)
-                                new_buffer = (unsigned char **) xrealloc(buffer, (vertical+vertical_bufsize+2)*sizeof(unsigned char*));
-                                if(new_buffer == NULL)
-                                        exit(-1);
-                                else {
-                                        buffer = new_buffer;
-                                        new_lll = (long *) xrealloc(linelengthlist, (vertical+vertical_bufsize+2)*sizeof(long));
-                                        if(new_lll == NULL)
-                                                exit(-1);
-                                        else {
-                                                linelengthlist = new_lll;
-                                        }
-                                }
+                                buffer = (unsigned char **) xrealloc(buffer, (vertical+vertical_bufsize+2)*sizeof(unsigned char*));
+                                linelengthlist = (long *) xrealloc(linelengthlist, (vertical+vertical_bufsize+2)*sizeof(long));
                         }
                         horizontal = -1;
                         vertical++;
@@ -112,12 +88,7 @@ struct file_o *read_bytes(char *filename)
                 // create space for a new char
                 // will be buffer increments later on!
                 if(horizontal % horizontal_bufsize <= 1) {
-                        new_line = (unsigned char *) xrealloc(buffer[vertical], (horizontal+horizontal_bufsize+2)*sizeof(unsigned char));
-                        if(new_line == NULL)
-                                exit(-1);
-                        else {
-                                buffer[vertical] = new_line;
-                        }
+                        buffer[vertical] = (unsigned char *) xrealloc(buffer[vertical], (horizontal+horizontal_bufsize+2)*sizeof(unsigned char));
                 }
                 linelengthlist[vertical] = horizontal;
                 horizontal++;
@@ -129,26 +100,11 @@ struct file_o *read_bytes(char *filename)
         // resize alloc'd buffer to needed space
         // first: cleanup all pre-alloc'd lines
         for(y = 0; y < (vertical+1); y++) {
-                new_line = (unsigned char *) xrealloc(buffer[y], (linelengthlist[y]+2)*sizeof(unsigned char));
-                if(new_line == NULL)
-                        exit(-1);
-                else {
-                        buffer[y] = new_line;
-                }
+                buffer[y] = (unsigned char *) xrealloc(buffer[y], (linelengthlist[y]+2)*sizeof(unsigned char));
         }
         // second: resize list of lines
-        new_buffer = (unsigned char **) xrealloc(buffer, (vertical+1)*sizeof(unsigned char*));
-        if(new_buffer == NULL)
-                exit(-1);
-        else {
-                buffer = new_buffer;
-                new_lll = (long *) xrealloc(linelengthlist, (vertical+1)*sizeof(long));
-                if(new_lll == NULL)
-                        exit(-1);
-                else {
-                        linelengthlist = new_lll;
-                }
-        }
+        buffer = (unsigned char **) xrealloc(buffer, (vertical+1)*sizeof(unsigned char*));
+        linelengthlist = (long *) xrealloc(linelengthlist, (vertical+1)*sizeof(long));
 
         xfree(buffer[vertical]);
         buffer[vertical] = NULL;
