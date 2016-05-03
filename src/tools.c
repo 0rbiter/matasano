@@ -37,5 +37,10 @@ void *xrealloc(void *rbuf, size_t size)
                 printf("Error: could not allocate memory");
                 exit(-1);
         }
+}
 
+void xfree(void *fbuf)
+{
+        free(fbuf);
+        fbuf = NULL;
 }
