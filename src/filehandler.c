@@ -73,8 +73,8 @@ struct file_o *readBytes(char *filename)
         unsigned char *new_line = NULL;
 
         unsigned char **buffer = NULL; 
-        buffer = (unsigned char **) malloc(1 * sizeof(unsigned char *));
-        buffer[vertical] = (unsigned char *) malloc(1 * sizeof(unsigned char));
+        buffer = (unsigned char **) xmalloc(1 * sizeof(unsigned char *));
+        buffer[vertical] = (unsigned char *) xmalloc(1 * sizeof(unsigned char));
         buffer[vertical][horizontal] = 0;
         if(buffer[0] == NULL)
                 exit(-1);
@@ -82,7 +82,7 @@ struct file_o *readBytes(char *filename)
                 exit(-1);
         long *new_lll = NULL;
         long *linelengthlist = NULL;
-        new_lll = (long *) malloc(1*sizeof(long));
+        new_lll = (long *) xmalloc(1*sizeof(long));
         if(new_lll == NULL)
                 exit(-1);
         else
@@ -155,7 +155,7 @@ struct file_o *readBytes(char *filename)
 
         free(buffer[vertical]);
         buffer[vertical] = NULL;
-        struct file_o *result = (struct file_o *) malloc(sizeof(struct file_o));
+        struct file_o *result = (struct file_o *) xmalloc(sizeof(struct file_o));
         result->length = linelengthlist;
         result->buffer.ui = buffer;
         for(y = 0; y < vertical; y++) {
@@ -182,7 +182,7 @@ char *getString(struct file_o **fobject)
 {
         int i, j;
         long sum_lengths = 0;
-        char *output = malloc((getStringLength(&(*fobject)) + 1) * sizeof(char));
+        char *output = xmalloc((getStringLength(&(*fobject)) + 1) * sizeof(char));
         for(i = 0; i < (*fobject)->elements; i++) {
                 for(j = 0; j < (*fobject)->length[i]+1; j++) {
                         output[sum_lengths+j] = (*fobject)->buffer.c[i][j];

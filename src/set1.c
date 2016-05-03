@@ -70,12 +70,12 @@ void s1c3()
          */
         char HEXSTRING3[] = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736\0";
         char SINGLECHAR[] = "A\0";
-        char *STRING3 = malloc(1 * sizeof(char));
+        char *STRING3 = xmalloc(1 * sizeof(char));
         int i, c;
         printf("Challenge 3\nfind the single byte to decrypt:\n");
         puts(HEXSTRING3);
         long str_length = hexstringToString(&STRING3, HEXSTRING3);
-        char *NEWSTRING = malloc(1 * sizeof(char));
+        char *NEWSTRING = xmalloc(1 * sizeof(char));
         for(i=0; i < 256; i++) {
                 SINGLECHAR[0] = (char) i;
                 xor_bytes_to_string(&NEWSTRING, STRING3, str_length, SINGLECHAR, 1);
@@ -102,8 +102,8 @@ void s1c4()
         printf("\n");
         char ENCCHAR[] = "A\0";
         char filename[] = "/home/orbiter/matasano/src/challenge4keys.txt";
-        char *STR_STRING = malloc(1);
-        char *STR_XOR = malloc(1);
+        char *STR_STRING = xmalloc(1);
+        char *STR_XOR = xmalloc(1);
         long lines = 0;
         int x;
         long length1;

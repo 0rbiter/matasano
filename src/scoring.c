@@ -31,10 +31,10 @@ void add_score(char *text, long length, char *key, long score)
         scores.length =                 realloc(scores.length, (scores.elements+1) * sizeof(long));
         scores.score =                  realloc(scores.score, (scores.elements+1) * sizeof(long));
         scores.text =                   realloc(scores.text, (scores.elements+1) * sizeof(char *));
-        scores.text[scores.elements] =  malloc(1);
+        scores.text[scores.elements] =  xmalloc(1);
         scores.text[scores.elements] =  realloc(scores.text[scores.elements], (length+1) * sizeof(char));
         scores.key =                    realloc(scores.key, (scores.elements+1) * sizeof(char *));
-        scores.key[scores.elements] =   malloc(1);
+        scores.key[scores.elements] =   xmalloc(1);
         scores.key[scores.elements] =   realloc(scores.key[scores.elements], 2 * sizeof(char));
         scores.length[scores.elements] = length;
         scores.score[scores.elements] = score;

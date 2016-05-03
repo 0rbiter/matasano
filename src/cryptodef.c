@@ -192,7 +192,7 @@ void bytesToB64(char *b64_string, unsigned char *buffer, long b64len, long buffe
 
 long b64_decode_string(char *output, char *input, long inputlength)
 {
-        struct base64 *xobject = malloc(sizeof(struct base64));
+        struct base64 *xobject = xmalloc(sizeof(struct base64));
         xobject->inputlength = inputlength;
         xobject->b64_string = (char*) calloc(xobject->inputlength+1, 1);
         xobject->ascii_string = (unsigned char*) calloc(xobject->inputlength/4*3, 1);
@@ -229,7 +229,7 @@ void hexstring_encode_bytes(unsigned char *output, char *input, long inputlength
                 exit(-1);
         }
         
-        struct base64 *dobject = malloc(sizeof(struct base64)); 
+        struct base64 *dobject = xmalloc(sizeof(struct base64)); 
         dobject->inputlength = strlen(input);
         dobject->input = input;
         dobject->bytebuffer = (unsigned char*) calloc(dobject->inputlength/2, 1);
@@ -251,7 +251,7 @@ void hexstring_encode_b64(char *output, char *input, long inputlength)
                 exit(-1);
         }
         
-        struct base64 *dobject = malloc(sizeof(struct base64)); 
+        struct base64 *dobject = xmalloc(sizeof(struct base64)); 
         dobject->inputlength = strlen(input);
         dobject->input = input;
         dobject->bytebuffer = (unsigned char*) calloc(dobject->inputlength/2, 1);
@@ -341,7 +341,7 @@ void xor_hexstrings(char *output, char *input1, char *input2)
 {
         long longlength;
         long wordlength;
-        struct base64 *output_buffer = malloc(sizeof(struct base64));
+        struct base64 *output_buffer = xmalloc(sizeof(struct base64));
 
         if(strlen(input1) == strlen(input2)) {
                 long length = strlen(input1);

@@ -28,10 +28,10 @@ int main(int argc, char **argv)
         char *filename6 = "/home/orbiter/matasano/src/challenge6keys.txt";
         struct file_o *filebuffer6 = readBytes(filename6);
         file_o_init(filebuffer6);
-        char *b64string = malloc(1);
+        char *b64string = xmalloc(1);
         char *wholestring = getString(&filebuffer6);
         long length;
-        char *STR_XOR = malloc(1);
+        char *STR_XOR = xmalloc(1);
         int keys_total = 3;
         char *tempchars;
         struct histogram *hist = hist_o_init(keys_total);
@@ -79,7 +79,7 @@ int main(int argc, char **argv)
                 tempf += pow((double) (letterscore_en[x] / 100.0), 2.0);
         printf("\n%0.5f\n\n", tempf);
         /*
-        char *chars = xmalloc(2);
+        char *chars = xxmalloc(2);
         chars[0] = 'T';
         puts(chars);
         chars = xrealloc(chars, 4);

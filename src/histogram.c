@@ -48,8 +48,8 @@ void transpose(struct transposed **tobject, char **inputstring, long length, int
         int i, o, c;
         long templength = length;
         (*tobject)->elements = divisor;
-        (*tobject)->lengths = malloc(length/divisor * sizeof(long));
-        (*tobject)->blocks = malloc(length/divisor * sizeof(char *));
+        (*tobject)->lengths = xmalloc(length/divisor * sizeof(long));
+        (*tobject)->blocks = xmalloc(length/divisor * sizeof(char *));
         //printf("Length: %li\tDivisor: %i - %li\n", length, divisor, length/divisor);
         for(i = 0; i < divisor; i++) {
                 (*tobject)->blocks[i] = calloc(length/divisor, sizeof(char));
@@ -82,7 +82,7 @@ int resolveKeylength(struct humming **hobject, float editdistance)
 
 long humming_distance(char *word1, char *word2, long length)
 {
-        char *word = malloc((length+1) * sizeof(char));
+        char *word = xmalloc((length+1) * sizeof(char));
         int i;
         long distance = 0;
         for(i = 0; i < length; i++) {
@@ -117,17 +117,17 @@ int get_keylength(struct histogram **hobject, int maxlength,
         float hd; // humming distance temp
         char *first = NULL; // catches first keylength worth of bits from the data
         char *second = NULL; // catch second keylength wort of bits
-        struct humming *distances = malloc(sizeof(struct humming));
-        distances->keylength = malloc((maxlength-1) * sizeof(int));
+        struct humming *distances = xmalloc(sizeof(struct humming));
+        distances->keylength = xmalloc((maxlength-1) * sizeof(int));
         distances->keys_total = keys_total;
-        distances->n_editdistance = malloc((maxlength-1) * sizeof(float));
-        float *sorted_ed = malloc(maxlength * sizeof(float));
+        distances->n_editdistance = xmalloc((maxlength-1) * sizeof(float));
+        float *sorted_ed = xmalloc(maxlength * sizeof(float));
         float min_distance = 0; // catches minimum distance over all keylengths tested
         int min_key = 0; // catches minimum distance over all keylengths tested
         char temp_byte;
         for(i = 2; i <= maxlength; i++) {
-                first = malloc(i * sizeof(char));
-                second = malloc(i * sizeof(char));
+                first = xmalloc(i * sizeof(char));
+                second = xmalloc(i * sizeof(char));
                 for(c = 0; c < i; c++) {
                         temp_byte = data[c];
                         first[c] = temp_byte;
@@ -171,16 +171,16 @@ struct histogram *hist_o_init(int keys_total)
 { // elements: how many strings; keys_total = how many keylengths will be tested
         long counter;
         int i;
-        struct histogram *hobject = malloc(sizeof(struct histogram));
-        hobject->data = (char *) malloc(sizeof(char)); // list of input data to be deciphered
-        hobject->tdata = malloc(sizeof(struct transposed));
+        struct histogram *hobject = xmalloc(sizeof(struct histogram));
+        hobject->data = (char *) xmalloc(sizeof(char)); // list of input data to be deciphered
+        hobject->tdata = xmalloc(sizeof(struct transposed));
         hobject->inputlength = 0;
-        hobject->hum = malloc(sizeof(struct humming));
+        hobject->hum = xmalloc(sizeof(struct humming));
         hobject->inputlength = 0;
         hobject->hum->keys_total = keys_total; // how many keylengths
-        hobject->hum->keylength = (int *) malloc(keys_total * sizeof(int));
-        hobject->hum->n_editdistance = (float *) malloc(keys_total * sizeof(float));
-        hobject->testkey = (char *) malloc(sizeof(char));
+        hobject->hum->keylength = (int *) xmalloc(keys_total * sizeof(int));
+        hobject->hum->n_editdistance = (float *) xmalloc(keys_total * sizeof(float));
+        hobject->testkey = (char *) xmalloc(sizeof(char));
         return hobject;
 }
 
