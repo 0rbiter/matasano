@@ -70,7 +70,7 @@ void heapify(float **heap, long heapsize, long index)
         return;
 }
 
-void buildHeap(float **heap, long heapsize)
+void build_heap(float **heap, long heapsize)
 {
         long index;
         for(index = (heapsize)/2; index >= 1; index--)
@@ -83,11 +83,11 @@ void buildHeap(float **heap, long heapsize)
 void heapsort(float **heap, long heapsize)
 {
         long index = heapsize;
-        buildHeap(heap, index);
+        build_heap(heap, index);
         while(index > 2) {
                 //swap(&(*heap)[1], &(*heap)[index-1], sizeof(float));
                 xor_swap(&(*heap)[1], &(*heap)[index-1], sizeof(float));
-                buildHeap(heap, index-1);
+                build_heap(heap, index-1);
                 index--;
         }
 }

@@ -60,7 +60,7 @@ int file_o_destroy(struct file_o *obj)
         return 0;
 }
 
-struct file_o *readBytes(char *filename)
+struct file_o *read_bytes(char *filename)
 {
         FILE *fp = fopen(filename, "r");
         if(!fp)
@@ -169,7 +169,7 @@ struct file_o *readBytes(char *filename)
         return result;
 }
 
-long getStringLength(struct file_o **fobject)
+long get_strlen(struct file_o **fobject)
 {
         int i;
         long sum_lengths = 0;
@@ -178,11 +178,11 @@ long getStringLength(struct file_o **fobject)
         return sum_lengths;
 }
 
-char *getString(struct file_o **fobject)
+char *get_string(struct file_o **fobject)
 {
         int i, j;
         long sum_lengths = 0;
-        char *output = xmalloc((getStringLength(&(*fobject)) + 1) * sizeof(char));
+        char *output = xmalloc((get_strlen(&(*fobject)) + 1) * sizeof(char));
         for(i = 0; i < (*fobject)->elements; i++) {
                 for(j = 0; j < (*fobject)->length[i]+1; j++) {
                         output[sum_lengths+j] = (*fobject)->buffer.c[i][j];
@@ -193,7 +193,7 @@ char *getString(struct file_o **fobject)
         return output;
 }
 
-long getFilesize(char *path)
+long get_filesize(char *path)
 {
         FILE *filename;
         filename = fopen(path, "r");

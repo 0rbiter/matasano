@@ -11,7 +11,7 @@
 #ifndef CRYPTODEF_C
 #define CRYPTODEF_C
 
-void stringToUpper(char *buffer)
+void string_to_upper(char *buffer)
 {
         while(*buffer)
         {
@@ -37,7 +37,7 @@ long ownlen(char *input)
         return charc;
 }
 
-void buildHexTable()
+void build_hextable()
 {
         int i;
         for(i=0; i<16; i++) {
@@ -49,7 +49,7 @@ void buildHexTable()
         }
 }
 
-void shiftArrayLeft(unsigned char *input, int size, int shift)
+void shift_array_left(unsigned char *input, int size, int shift)
 {
         int i, s;
         unsigned char carry = zero;
@@ -78,9 +78,9 @@ void shift_char_array_left(char *input, int size, int shift)
                 }
         }
 }
-unsigned char charTo4Bits(char input, unsigned int leftorright)
+unsigned char char_to_4bits(char input, unsigned int leftorright)
 {
-        if(HEXTABLE[0][0] != '0') buildHexTable();
+        if(HEXTABLE[0][0] != '0') build_hextable();
         int i;
         for(i=0; i<16; i++)
                 if(toupper(input) == HEXTABLE[0][i])
@@ -91,9 +91,9 @@ unsigned char charTo4Bits(char input, unsigned int leftorright)
                 return HEXTABLE[1][i];
 }
 
-void bitsToHexchar(char *output, char *input)
+void bits_to_hexchar(char *output, char *input)
 {
-        if(HEXTABLE[0][0] != '0') buildHexTable();
+        if(HEXTABLE[0][0] != '0') build_hextable();
         long c;
         long o = 0;
         for(c=0; c < strlen(input); c++) {
@@ -123,7 +123,7 @@ long active_b64_decode_string(char **output, char *input, long inputlength)
         (*output)[inputlength/4*3] = '\0';
         return inputlength/4*3;
 }
-long hexstringToString(char **buffer, char *input)
+long hexstr_to_string(char **buffer, char *input)
 {
         if(strlen(input) % 2 > 0) {
                 printf("Error - string length is odd. 2 hex needed to fill a byte!");
@@ -134,14 +134,14 @@ long hexstringToString(char **buffer, char *input)
         long i = 0;
         for(a = 0; a < strlen(input); a+=2) {
                 (*buffer)[i] = 0x00;
-                (*buffer)[i] |= charTo4Bits(input[a], a);
-                (*buffer)[i] |= charTo4Bits(input[a+1], a+1);
+                (*buffer)[i] |= char_to_4bits(input[a], a);
+                (*buffer)[i] |= char_to_4bits(input[a+1], a+1);
                 i++;
         }
         (*buffer)[strlen(input)/2] = '\0';
         return strlen(input)/2;
 }
-void hexstringToBytes(unsigned char *buffer, char *input)
+void hexstr_to_bytes(unsigned char *buffer, char *input)
 {
         if(strlen(input) % 2 > 0) {
                 printf("Error - string length is odd. 2 hex needed to fill a byte!");
@@ -150,13 +150,13 @@ void hexstringToBytes(unsigned char *buffer, char *input)
         int a = 0;
         int i = 0;
         while(input[a] != '\0') {
-                buffer[i] |= charTo4Bits(input[a], a);
+                buffer[i] |= char_to_4bits(input[a], a);
                 a++;
                 if(a % 2 == 0 && a != 0) i++;
         }
 }
 
-void bytesToB64(char *b64_string, unsigned char *buffer, long b64len, long bufferlen)
+void bytes_to_b64(char *b64_string, unsigned char *buffer, long b64len, long bufferlen)
 {
         int equalsigncount = 0;
         long inputlength = bufferlen*2;
@@ -168,7 +168,7 @@ void bytesToB64(char *b64_string, unsigned char *buffer, long b64len, long buffe
         int i = 0;
         for(i=0; i<b64len; i++) {
                 b64_string[i] = BASE64[(buffer[0] >> 2)];
-                shiftArrayLeft(buffer, bufferlen, 6);
+                shift_array_left(buffer, bufferlen, 6);
         }
         if(equalsigncount > 0) {
                 int b;
@@ -196,7 +196,7 @@ long b64_decode_string(char *output, char *input, long inputlength)
                 a=0;
                 while(xobject->b64_string[b] != BASE64[a] && a < 64 && xobject->b64_string[b] != '=')
                         a++;
-                shiftArrayLeft(xobject->ascii_string, inputlength/4*3, 6);
+                shift_array_left(xobject->ascii_string, inputlength/4*3, 6);
                 xobject->ascii_string[inputlength/4*3-1] |= a;
         }
         memcpy(output, xobject->ascii_string, inputlength/4*3);
@@ -224,7 +224,7 @@ void hexstring_encode_bytes(unsigned char *output, char *input, long inputlength
         dobject->input = input;
         dobject->bytebuffer = (unsigned char*) xcalloc(dobject->inputlength/2, 1);
         dobject->bytebuffer = xrealloc(dobject->bytebuffer, dobject->inputlength/2);
-        hexstringToBytes(dobject->bytebuffer, dobject->input);
+        hexstr_to_bytes(dobject->bytebuffer, dobject->input);
         memcpy(output, dobject->bytebuffer, inputlength/2);
         free(dobject->bytebuffer);
         dobject->bytebuffer = NULL;
@@ -245,8 +245,8 @@ void hexstring_encode_b64(char *output, char *input, long inputlength)
         dobject->bytebuffer = (unsigned char*) xcalloc(dobject->inputlength/2, 1);
         dobject->b64_string = (char*) xcalloc(b64length(dobject->input), 1);
         dobject->bytebuffer = xrealloc(dobject->bytebuffer, dobject->inputlength/2);
-        hexstringToBytes(dobject->bytebuffer, dobject->input);
-        bytesToB64(dobject->b64_string, dobject->bytebuffer, b64length(dobject->input), dobject->inputlength/2);
+        hexstr_to_bytes(dobject->bytebuffer, dobject->input);
+        bytes_to_b64(dobject->b64_string, dobject->bytebuffer, b64length(dobject->input), dobject->inputlength/2);
         memcpy(output, dobject->b64_string, b64length(dobject->input));
         free(dobject->bytebuffer);
         dobject->bytebuffer = NULL;
@@ -324,7 +324,7 @@ void xor_hexstrings(char *output, char *input1, char *input2)
                 output_buffer->bytebuffer = (unsigned char*) xcalloc(length/2, 1);
                 output_buffer->b64_string = (char*) xcalloc(b64length(input1), 1);
                 equal_xor_hexstrings(output_buffer->bytebuffer, input1, input2, length);
-                bytesToB64(output_buffer->b64_string, output_buffer->bytebuffer, b64length(input1), length/2);
+                bytes_to_b64(output_buffer->b64_string, output_buffer->bytebuffer, b64length(input1), length/2);
 
                 memcpy(output, output_buffer->b64_string, b64length(input1));
 

@@ -26,10 +26,10 @@ int main(int argc, char **argv)
         */
 
         char *filename6 = "/home/orbiter/matasano/src/challenge6keys.txt";
-        struct file_o *filebuffer6 = readBytes(filename6);
+        struct file_o *filebuffer6 = read_bytes(filename6);
         file_o_init(filebuffer6);
         char *b64string = xmalloc(1);
-        char *wholestring = getString(&filebuffer6);
+        char *wholestring = get_string(&filebuffer6);
         long length;
         char *STR_XOR = xmalloc(1);
         int keys_total = 3;

@@ -1,18 +1,18 @@
 /* cryptodef.h */
 #ifndef CRYPTODEF_H
 #define CRYPTODEF_H
-void stringToUpper(char *buffer);
+void string_to_upper(char *buffer);
 long b64length(char *pre_decode_STRING);
 long ownlen(char *input);
-void buildHexTable();
-void shiftArrayLeft(unsigned char *input, int size, int shift);
+void build_hextable();
+void shift_array_left(unsigned char *input, int size, int shift);
 void shift_char_array_left(char *input, int size, int shift);
-unsigned char charTo4Bits(char input, unsigned int leftorright);
-void bitsToHexchar(char *output, char *input);
+unsigned char char_to_4bits(char input, unsigned int leftorright);
+void bits_to_hexchar(char *output, char *input);
 long active_b64_decode_string(char **output, char *input, long inputlength);
-long hexstringToString(char **buffer, char *input);
-void hexstringToBytes(unsigned char *buffer, char *input);
-void bytesToB64(char *b64_string, unsigned char *buffer, long b64len, long bufferlen);
+long hexstr_to_string(char **buffer, char *input);
+void hexstr_to_bytes(unsigned char *buffer, char *input);
+void bytes_to_b64(char *b64_string, unsigned char *buffer, long b64len, long bufferlen);
 long b64_decode_string(char *output, char *input, long inputlength);
 void hexstring_encode_bytes(unsigned char *output, char *input, long inputlength);
 void hexstring_encode_b64(char *output, char *input, long inputlength);

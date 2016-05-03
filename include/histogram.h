@@ -17,7 +17,7 @@ struct histogram {
         char *testkey;
 };
 void transpose(struct transposed **tobject, char **inputstring, long length, int divisor);
-int resolveKeylength(struct humming **hobject, float editdistance);
+int resolve_keylength(struct humming **hobject, float editdistance);
 long humming_distance(char *word1, char *word2, long length);
 int get_keylength(struct histogram **hobject, int maxlength, char *data, long length, int keys_total);
 struct histogram *hist_o_init(int keys_total);

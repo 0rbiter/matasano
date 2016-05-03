@@ -74,7 +74,7 @@ void s1c3()
         int i, c;
         printf("Challenge 3\nfind the single byte to decrypt:\n");
         puts(HEXSTRING3);
-        long str_length = hexstringToString(&STRING3, HEXSTRING3);
+        long str_length = hexstr_to_string(&STRING3, HEXSTRING3);
         char *NEWSTRING = xmalloc(1 * sizeof(char));
         for(i=0; i < 256; i++) {
                 SINGLECHAR[0] = (char) i;
@@ -107,10 +107,10 @@ void s1c4()
         long lines = 0;
         int x;
         long length1;
-        struct file_o *buffer1 = readBytes(filename);
+        struct file_o *buffer1 = read_bytes(filename);
         file_o_init(buffer1);
         for(lines = 0; lines < buffer1->elements; lines++) {
-                length1 = hexstringToString(&STR_STRING, buffer1->buffer.c[lines]);
+                length1 = hexstr_to_string(&STR_STRING, buffer1->buffer.c[lines]);
                 for(x=0; x < 256; x++) {
                         ENCCHAR[0] = x;
                         xor_bytes_to_string(&STR_XOR, STR_STRING, length1, ENCCHAR, 1);
@@ -145,7 +145,7 @@ void s1c5() {
         char *xor_hexstring = xcalloc(strlen(STRING4)*2+1, 1);
         //xor_strings(xor_string2, STRING4, STR_KEY5);
         xor_bytes_to_string(&xor_string2, STRING4, strlen(STRING4), STR_KEY5, 3);
-        bitsToHexchar(xor_hexstring, xor_string2);
+        bits_to_hexchar(xor_hexstring, xor_string2);
         puts("Solution:");
         puts(xor_hexstring);
 

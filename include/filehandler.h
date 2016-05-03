@@ -22,8 +22,8 @@ struct file_o {
 void set_buffersize(long vertical, long horizontal);
 int file_o_init(struct file_o *obj);
 int file_o_destroy(struct file_o *obj);
-struct file_o *readBytes(char *filename);
-long getStringLength(struct file_o **fobject);
-char *getString(struct file_o **fobject);
-long getFilesize(char *path);
+struct file_o *read_bytes(char *filename);
+long get_strlen(struct file_o **fobject);
+char *get_string(struct file_o **fobject);
+long get_filesize(char *path);
 #endif /* !FILEHANDLER_H */

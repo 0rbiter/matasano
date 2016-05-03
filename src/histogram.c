@@ -69,7 +69,7 @@ void transpose(struct transposed **tobject, char **inputstring, long length, int
                 //printf("\nBlock: %i\tLength: %li", i, (*tobject)->lengths[i]);
 }
 
-int resolveKeylength(struct humming **hobject, float editdistance)
+int resolve_keylength(struct humming **hobject, float editdistance)
 {   /* this function is searching for the according keylength given a editdistance
      * in a 'struct humming'; resolving the right keys for edit distances after
      * heapsort has done it's job
@@ -147,7 +147,7 @@ int get_keylength(struct histogram **hobject, int maxlength, char *data, long le
         memcpy((*hobject)->data, data, length);
         for(kctr = 0; kctr < keys_total; kctr++) {
                (*hobject)->hum->keylength[kctr] = 
-                resolveKeylength(&distances, sorted_ed[kctr+1]);
+                resolve_keylength(&distances, sorted_ed[kctr+1]);
                printf("\nKeylength: %i\tEditdistance %0.5f", (*hobject)->hum->keylength[kctr],
                                                         (*hobject)->hum->n_editdistance[kctr]);
         }
