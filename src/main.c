@@ -41,7 +41,7 @@ int main(int argc, char **argv)
         if(tempchars != NULL)
                 hist->testkey = tempchars;
         else
-                exit(-1);
+                return -1;
         int x;
         char ENCCHAR[] = "A\0";
         for(long c = 0; c < hist->tdata->elements; c++) {
@@ -61,7 +61,7 @@ int main(int argc, char **argv)
         if(tempchars != NULL)
                 STR_XOR = tempchars;
         else
-                exit(-1);
+                return -1;
         xor_bytes_to_string(&STR_XOR, hist->data, length, hist->testkey, 5);
         printf("\n\n\n");
         puts(STR_XOR);
@@ -70,6 +70,9 @@ int main(int argc, char **argv)
         free(b64string);
         file_o_destroy(filebuffer6);
         hist_o_destroy(hist); 
+        STR_XOR = NULL;
+        wholestring = NULL;
+        b64string = NULL;
         double tempf = 0;
         for(x = 0; x < 26; x++)
                 tempf += pow((double) (letterscore_en[x] / 100.0), 2.0);

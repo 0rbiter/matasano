@@ -4,7 +4,8 @@ SRC_DIR = src/
 INC_DIR = include/
 BUILD_DIR = build/
 #CFLAGS=-lm -v -O0 -fno-strict-aliasing -fno-omit-frame-pointer -g 
-CFLAGS=-v -O0 -g 
+CFLAGS=-v -O0 -g
+LDFLAGS=-lm
 
 .PHONY: directories
 .PHONY: clean
@@ -24,7 +25,7 @@ dir:
 	    mkdir -p $(BUILD_DIR)
 
 $(BUILD_DIR)/$(EXECUTABLE): $(OBJECTS)
-	    $(CC) -lm $^ -o $@
+	    $(CC) $(LDFLAGS) $^ -o $@
 
 $(OBJECTS): $(BUILD_DIR)/%.o : $(SRC_DIR)/%.c
 	    $(CC) $(CFLAGS) $< -c -o $@

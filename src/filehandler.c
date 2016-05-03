@@ -52,8 +52,11 @@ int file_o_destroy(struct file_o *obj)
                 free(obj->buffer.i[i++]);
         }
         free(obj->buffer.i);
+        obj->buffer.i = NULL;
         free(obj->length);
+        obj->length = NULL;
         free(obj);
+        obj = NULL;
         return 0;
 }
 
@@ -151,6 +154,7 @@ struct file_o *readBytes(char *filename)
         }
 
         free(buffer[vertical]);
+        buffer[vertical] = NULL;
         struct file_o *result = (struct file_o *) malloc(sizeof(struct file_o));
         result->length = linelengthlist;
         result->buffer.ui = buffer;

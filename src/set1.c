@@ -32,7 +32,9 @@ void s1c1() {
         b64_decode_string(decoded_string, b64HS, strlen(b64HS));
         puts(decoded_string);
         free(decoded_string);
+        decoded_string = NULL;
         free(b64HS);
+        b64HS = NULL;
 }
 
 void s1c2() {
@@ -54,7 +56,9 @@ void s1c2() {
         b64_decode_string(xor_string, xor_b64, strlen(xor_b64));
         puts(xor_string);
         free(xor_b64);
+        xor_b64 = NULL;
         free(xor_string);
+        xor_string = NULL;
 }
 
 void s1c3()
@@ -80,7 +84,9 @@ void s1c3()
         get_best();
         destroy_scores();
         free(NEWSTRING);
+        NEWSTRING = NULL;
         free(STRING3);
+        STRING3 = NULL;
 }
 
 
@@ -116,7 +122,9 @@ void s1c4()
         destroy_scores();
         file_o_destroy(buffer1);
         free(STR_STRING);
+        STR_STRING = NULL;
         free(STR_XOR); 
+        STR_XOR = NULL;
 }
 
 
@@ -142,7 +150,9 @@ void s1c5() {
         puts(xor_hexstring);
 
         free(xor_hexstring);
+        xor_hexstring = NULL;
         free(xor_string2);
+        xor_string2 = NULL;
         separate();
 }
 

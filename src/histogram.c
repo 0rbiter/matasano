@@ -94,6 +94,7 @@ long humming_distance(char *word1, char *word2, long length)
                 }
         }
         free(word);
+        word = NULL;
         return distance;
 }
 
@@ -137,7 +138,9 @@ int get_keylength(struct histogram **hobject, int maxlength,
                 distances->n_editdistance[i-2] = hd / i;
                 distances->keylength[i-2] = i;
                 free(first);
+                first = NULL;
                 free(second);
+                second = NULL;
         }
         // min heapsort the editdistances
         if(maxlength-1 < keys_total)
@@ -154,9 +157,13 @@ int get_keylength(struct histogram **hobject, int maxlength,
                                                         (*hobject)->hum->n_editdistance[kctr]);
         }
         free(distances->keylength);
+        distances->keylength = NULL;
         free(distances->n_editdistance);
+        distances->n_editdistance = NULL;
         free(distances);
+        distances = NULL;
         free(sorted_ed);
+        sorted_ed = NULL;
         return min_distance;
 }
 
@@ -183,15 +190,25 @@ int hist_o_destroy(struct histogram *hobject)
         int i;
         for(i = 0; i < hobject->tdata->elements; i++)
                 free(hobject->tdata->blocks[i]);
+        hobject->tdata->blocks[i] = NULL;
         free(hobject->tdata->blocks);
+        hobject->tdata->blocks = NULL;
         free(hobject->tdata->lengths);
+        hobject->tdata->lengths = NULL;
         free(hobject->tdata);
+        hobject->tdata = NULL;
         free(hobject->data); 
+        hobject->data = NULL;
         free(hobject->testkey);
+        hobject->testkey = NULL;
         free(hobject->hum->keylength);
+        hobject->hum->keylength = NULL;
         free(hobject->hum->n_editdistance);
+        hobject->hum->n_editdistance = NULL;
         free(hobject->hum);
+        hobject->hum = NULL;
         free(hobject);
+        hobject = NULL;
         return 0;
 }
 

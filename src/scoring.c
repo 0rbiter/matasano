@@ -48,12 +48,18 @@ void destroy_scores()
         long c;
         for(c = 0; c < scores.elements; c++) {
                 free(scores.text[c]);
+                scores.text[c] = NULL;
                 free(scores.key[c]);
+                scores.key[c] = NULL;
         }
         free(scores.text);
+        scores.text = NULL;
         free(scores.key);
+        scores.key = NULL;
         free(scores.score);
+        scores.score = NULL;
         free(scores.length);
+        scores.length = NULL;
         scores.length = NULL,
         scores.score = NULL,
         scores.key = NULL,
