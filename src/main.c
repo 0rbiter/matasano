@@ -17,14 +17,13 @@
 
 int main(int argc, char **argv)
 {
-        /*
+        /*        
         s1c1();
         s1c2();
         s1c3();
         s1c4();
         s1c5();
         */
-
         char *filename6 = "/home/orbiter/matasano/src/challenge6keys.txt";
         struct file_o *filebuffer6 = read_bytes(filename6);
         file_o_init(filebuffer6);
@@ -37,7 +36,7 @@ int main(int argc, char **argv)
         length = active_b64_decode_string(&b64string, wholestring, strlen(wholestring));
         get_keylength(&hist, 20, b64string, length, keys_total);
         transpose(&hist->tdata, &hist->data, length, hist->hum->keylength[0]);
-        hist->testkey = xrealloc(hist->testkey, (hist->tdata->elements + 1) * sizeof(char));
+        hist->scores->testkey = xrealloc(hist->scores->testkey, (hist->tdata->elements + 1) * sizeof(char));
         int x;
         char ENCCHAR[] = "A\0";
         for(long c = 0; c < hist->tdata->elements; c++) {
@@ -47,14 +46,14 @@ int main(int argc, char **argv)
                         xor_bytes_to_string(&STR_XOR, hist->tdata->blocks[c], hist->tdata->lengths[c], ENCCHAR, 1);
                         get_score(STR_XOR, hist->tdata->lengths[c], ENCCHAR, -100, 3.0f, 0);
                 }
-                hist->testkey[c] = get_best();
+                hist->scores->testkey[c] = get_best();
                 destroy_scores();
         }
-        hist->testkey[hist->tdata->elements] = '\0';
+        hist->scores->testkey[hist->tdata->elements] = '\0';
         printf("\n");
-        puts(hist->testkey);
+        puts(hist->scores->testkey);
         STR_XOR = xrealloc(STR_XOR, (hist->inputlength + 1) * sizeof(char));
-        xor_bytes_to_string(&STR_XOR, hist->data, length, hist->testkey, 5);
+        xor_bytes_to_string(&STR_XOR, hist->data, length, hist->scores->testkey, 5);
         printf("\n\n\n");
         puts(STR_XOR);
         xfree(STR_XOR);

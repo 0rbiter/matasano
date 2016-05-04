@@ -5,7 +5,6 @@ SRC_DIR = src/
 INC_DIR = include/
 BUILD_DIR = build/
 CFLAGS=-v -O0 -fno-strict-aliasing -fno-omit-frame-pointer -g 
-#CFLAGS=-v -O0 -g
 LDFLAGS=-lm
 
 .PHONY: directories
@@ -32,7 +31,7 @@ $(OBJECTS): $(BUILD_DIR)/%.o : $(SRC_DIR)/%.c
 	    $(CC) $(CFLAGS) $< -c -o $@
 
 clean:
-	$(RM) $(BUILD_DIR)*.o
+	$(RM) $(BUILD_DIR)/*.o
 	$(RM) $(BUILD_DIR)/$(EXECUTABLE)
 
 run: all

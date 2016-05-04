@@ -3,45 +3,100 @@
 #include "../include/headerfiles.h"
 #endif
 
-#ifndef HEAP_H
-#define HEA_H
+#ifndef PROJECT_LIBS
+#define PROJECT_LIBS
+#include "../include/histogram.h"
 #include "../include/heapsort.h"
-#endif
+#endif 
+
 /* histogram.c */
 #ifndef HISTOGRAM_C
 #define HISTOGRAM_C
-/*
- * the histogram will contain all strings to be decoded
- *  -> # of "elements" = strings to decypher
- *  -> "data" string
- *  -> "inputlength" per string
- *
- *  -> humming results "hum" keylength per string "data"
- *      -> "keys_total" number of best guessed keylengths
- *      -> "keylength[]" keylengths
- *      -> "n_editdistance[]" normalized edit distances per keylength according to "data"
- *  -> struct lang "scores"
- *      -> tested key "testkey" char
- *      -> "unciphered" decyphered data according to testkey
- *      -> "score[]" list of scores for to "unciphered"
- *
- */
 
-struct histogram {
-        char *data;
-        long inputlength;
-        struct transposed {
-                long elements;
-                long *lengths;
-                char **blocks;
-        } *tdata;
-        struct humming {
-                int keys_total;
-                int *keylength;
-                float *n_editdistance;
-        } *hum;
-        char *testkey;
+void build_bs_english()
+{
+        english = xmalloc(sizeof(struct betterscore));
+        english->score_elements =  1;
+        english->number_of_signs = 26;
+        memcpy(english->signs, letters, 26);
+        english->testkey = NULL;
+        english->freq = (float **) xmalloc(sizeof(float *));
+        english->freq[0] = (float *) xmalloc(26 * sizeof(float));
+        memcpy(english->freq[0], en_scores, 26);
+        english->counted_letters = (int *) xmalloc(sizeof(int));
+        english->counted_letters[0] = 0;
+        english->ncoefficiant = (float *) xmalloc(sizeof(float));
+        english->ncoefficiant[0] = 0;
 };
+
+void get_std_freq (float **sobj)
+{
+        for(int i = 0; i < 26; i++)
+                (*sobj)[i] = (float) 1 / 26;
+        return;
+}
+
+void calc_normalized_coe(struct betterscore **sbuf, long element)
+{ // to be applied to ncoefficiant
+        float result = 0;
+        for(int i = 0; i < (*sbuf)->counted_letters[element]; i++)
+                result += pow((*sbuf)->freq[element][i] / 100, 2);
+        (*sbuf)->ncoefficiant[element] = result/(*sbuf)->counted_letters[element];
+        return;
+}
+
+struct histogram *hist_o_init(int keys_total)
+{ // elements: how many strings; keys_total = how many keylengths will be tested
+        long counter;
+        int i;
+        struct histogram *hobject = xmalloc(sizeof(struct histogram));
+        hobject->data = (char *) xmalloc(sizeof(char)); // list of input data to be deciphered
+        hobject->tdata = xmalloc(sizeof(struct transposed));
+        hobject->inputlength = 0;
+        hobject->hum = xmalloc(sizeof(struct humming));
+        hobject->hum->keys_total = keys_total; // how many keylengths
+        hobject->hum->keylength = (int *) xmalloc(keys_total * sizeof(int));
+        hobject->hum->n_editdistance = (float *) xmalloc(keys_total * sizeof(float));
+        hobject->scores = (struct betterscore *) xmalloc(sizeof(struct betterscore));
+        hobject->scores->score_elements =  1;
+        hobject->scores->number_of_signs = 26;
+        memcpy(hobject->scores->signs, letters, 26);
+        hobject->scores->testkey = (char *) xmalloc(sizeof(char));
+        hobject->scores->freq = (float **) xmalloc(sizeof(float *));
+        hobject->scores->freq[0] = (float *) xmalloc(26 * sizeof(float));
+        //memset(hobject->scores->freq[0], 0.0f, 26);
+        get_std_freq(&hobject->scores->freq[0]);
+        hobject->scores->counted_letters = (int *) xmalloc(sizeof(int));
+        hobject->scores->counted_letters[0] = 0;
+        hobject->scores->ncoefficiant = (float *) xmalloc(sizeof(float));
+        calc_normalized_coe(&hobject->scores, 0);
+        return hobject;
+}
+
+int hist_o_destroy(struct histogram *hobject)
+{
+        long counter;
+        int i;
+        for(i = 0; i < hobject->tdata->elements; i++)
+                xfree(hobject->tdata->blocks[i]);
+        xfree(hobject->tdata->blocks);
+        xfree(hobject->tdata->lengths);
+        xfree(hobject->tdata);
+        xfree(hobject->data); 
+        xfree(hobject->hum->keylength);
+        xfree(hobject->hum->n_editdistance);
+        xfree(hobject->hum);
+        for(long i = 0; i < hobject->scores->score_elements; i++) {
+                xfree(hobject->scores->freq[i]);
+        }
+        xfree(hobject->scores->testkey);
+        xfree(hobject->scores->freq);
+        xfree(hobject->scores->counted_letters);
+        xfree(hobject->scores->ncoefficiant);
+        xfree(hobject->scores);
+        xfree(hobject);
+        return 0;
+}
 
 void transpose(struct transposed **tobject, char **inputstring, long length, int divisor)
 {
@@ -50,7 +105,6 @@ void transpose(struct transposed **tobject, char **inputstring, long length, int
         (*tobject)->elements = divisor;
         (*tobject)->lengths = xmalloc(length/divisor * sizeof(long));
         (*tobject)->blocks = xmalloc(length/divisor * sizeof(char *));
-        //printf("Length: %li\tDivisor: %i - %li\n", length, divisor, length/divisor);
         for(i = 0; i < divisor; i++) {
                 (*tobject)->blocks[i] = xcalloc(length/divisor, sizeof(char));
                 (*tobject)->lengths[i] = length / divisor;
@@ -59,14 +113,11 @@ void transpose(struct transposed **tobject, char **inputstring, long length, int
         c = 0;
         while(length-1 >= c+i) {
                 for(i = 0; i < divisor; i++) {
-                        //printf("\nc: %i\to: %i\ti: %i\tchar: %c", c, o, i, (*inputstring)[c+i]);
                         (*tobject)->blocks[i][o] = (*inputstring)[c+i];
                 }
                 o++;
                 c += divisor;
         }
-        //for(i = 0; i < divisor; i++)
-                //printf("\nBlock: %i\tLength: %li", i, (*tobject)->lengths[i]);
 }
 
 int resolve_keylength(struct humming **hobject, float editdistance)
@@ -160,51 +211,6 @@ int get_keylength(struct histogram **hobject, int maxlength, char *data, long le
         xfree(sorted_ed);
         sorted_ed = NULL;
         return min_distance;
-}
-
-struct histogram *hist_o_init(int keys_total)
-{ // elements: how many strings; keys_total = how many keylengths will be tested
-        long counter;
-        int i;
-        struct histogram *hobject = xmalloc(sizeof(struct histogram));
-        hobject->data = (char *) xmalloc(sizeof(char)); // list of input data to be deciphered
-        hobject->tdata = xmalloc(sizeof(struct transposed));
-        hobject->inputlength = 0;
-        hobject->hum = xmalloc(sizeof(struct humming));
-        hobject->inputlength = 0;
-        hobject->hum->keys_total = keys_total; // how many keylengths
-        hobject->hum->keylength = (int *) xmalloc(keys_total * sizeof(int));
-        hobject->hum->n_editdistance = (float *) xmalloc(keys_total * sizeof(float));
-        hobject->testkey = (char *) xmalloc(sizeof(char));
-        return hobject;
-}
-
-int hist_o_destroy(struct histogram *hobject)
-{
-        long counter;
-        int i;
-        for(i = 0; i < hobject->tdata->elements; i++)
-                xfree(hobject->tdata->blocks[i]);
-        hobject->tdata->blocks[i] = NULL;
-        xfree(hobject->tdata->blocks);
-        hobject->tdata->blocks = NULL;
-        xfree(hobject->tdata->lengths);
-        hobject->tdata->lengths = NULL;
-        xfree(hobject->tdata);
-        hobject->tdata = NULL;
-        xfree(hobject->data); 
-        hobject->data = NULL;
-        xfree(hobject->testkey);
-        hobject->testkey = NULL;
-        xfree(hobject->hum->keylength);
-        hobject->hum->keylength = NULL;
-        xfree(hobject->hum->n_editdistance);
-        hobject->hum->n_editdistance = NULL;
-        xfree(hobject->hum);
-        hobject->hum = NULL;
-        xfree(hobject);
-        hobject = NULL;
-        return 0;
 }
 
 #endif /* !HISTOGRAM_C */
