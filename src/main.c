@@ -35,8 +35,8 @@ int main(int argc, char **argv)
         struct histogram *hist = hist_o_init(keys_total);
         length = active_b64_decode_string(&b64string, wholestring, strlen(wholestring));
         get_keylength(&hist, 20, b64string, length, keys_total);
-        transpose(&hist->tdata, &hist->data, length, hist->hum->keylength[0]);
-        hist->scores->testkey = xrealloc(hist->scores->testkey, (hist->tdata->elements + 1) * sizeof(char));
+        transpose(&hist, &hist->tdata, &hist->data, length, hist->hum->keylength[0]);
+        //hist->scores->testkey = xrealloc(hist->scores->testkey, (hist->tdata->elements + 1) * sizeof(char));
         int x;
         char ENCCHAR[] = "A\0";
         for(long c = 0; c < hist->tdata->elements; c++) {
@@ -44,18 +44,15 @@ int main(int argc, char **argv)
                         ENCCHAR[0] = x;
                         memset(STR_XOR, hist->tdata->elements, 0);
                         xor_bytes_to_string(&STR_XOR, hist->tdata->blocks[c], hist->tdata->lengths[c], ENCCHAR, 1);
-                        get_score(STR_XOR, hist->tdata->lengths[c], ENCCHAR, -100, 3.0f, 0);
+                        //get_score(STR_XOR, hist->tdata->lengths[c], ENCCHAR, -100, 3.0f, 0);
+                        add_betterscore(&hist, c, STR_XOR, ENCCHAR[0]);
                 }
-                hist->scores->testkey[c] = get_best();
-                destroy_scores();
         }
-        hist->scores->testkey[hist->tdata->elements] = '\0';
         printf("\n");
-        puts(hist->scores->testkey);
-        STR_XOR = xrealloc(STR_XOR, (hist->inputlength + 1) * sizeof(char));
-        xor_bytes_to_string(&STR_XOR, hist->data, length, hist->scores->testkey, 5);
+        //STR_XOR = xrealloc(STR_XOR, (hist->inputlength + 1) * sizeof(char));
+        //xor_bytes_to_string(&STR_XOR, hist->data, length, hist->scores->testkey, 5);
         printf("\n\n\n");
-        puts(STR_XOR);
+        //puts(STR_XOR);
         xfree(STR_XOR);
         xfree(wholestring);
         xfree(b64string);
