@@ -14,11 +14,11 @@ struct histogram {
                 long *lengths;
                 char **blocks;
         } *tdata;
-        struct humming {
+        struct hamming {
                 int keys_total;
                 int *keylength;
                 float *n_editdistance;
-        } *hum;
+        } *ham;
         struct betterscore {
                 long score_elements;
                 int number_of_signs;
@@ -37,8 +37,8 @@ struct betterscore *score_o_init(long blockcount);
 void score_o_destroy(struct betterscore *sobj, long blockcount);
 void add_betterscore(struct histogram **hobj, long block, char *decrypted, char key);
 void transpose(struct histogram **hist, struct transposed **tobject, char **inputstring, long length, int divisor);
-int resolve_keylength(struct humming **hobject, float editdistance);
-long humming_distance(char *word1, char *word2, long length);
+int resolve_keylength(struct hamming **hobject, float editdistance);
+long hamming_distance(char *word1, char *word2, long length);
 int get_keylength(struct histogram **hobject, int maxlength, char *data, long length, int keys_total);
 struct histogram *hist_o_init(int keys_total);
 int hist_o_destroy(struct histogram *hobject);

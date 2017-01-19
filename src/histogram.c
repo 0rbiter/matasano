@@ -72,10 +72,10 @@ struct histogram *hist_o_init(int keys_total)
         hobject->data = (char *) xmalloc(sizeof(char)); // list of input data to be deciphered
         hobject->tdata = xmalloc(sizeof(struct transposed));
         hobject->inputlength = 0;
-        hobject->hum = xmalloc(sizeof(struct humming));
-        hobject->hum->keys_total = keys_total; // how many keylengths
-        hobject->hum->keylength = (int *) xmalloc(keys_total * sizeof(int));
-        hobject->hum->n_editdistance = (float *) xmalloc(keys_total * sizeof(float));
+        hobject->ham = xmalloc(sizeof(struct hamming));
+        hobject->ham->keys_total = keys_total; // how many keylengths
+        hobject->ham->keylength = (int *) xmalloc(keys_total * sizeof(int));
+        hobject->ham->n_editdistance = (float *) xmalloc(keys_total * sizeof(float));
         hobject->scores = NULL;
         return hobject;
 }
@@ -92,9 +92,9 @@ int hist_o_destroy(struct histogram *hobject)
         xfree(hobject->tdata->lengths);
         xfree(hobject->tdata);
         xfree(hobject->data); 
-        xfree(hobject->hum->keylength);
-        xfree(hobject->hum->n_editdistance);
-        xfree(hobject->hum);
+        xfree(hobject->ham->keylength);
+        xfree(hobject->ham->n_editdistance);
+        xfree(hobject->ham);
         xfree(hobject);
         return 0;
 }
@@ -194,9 +194,9 @@ void transpose(struct histogram **hist, struct transposed **tobject, char **inpu
         return;
 }
 
-int resolve_keylength(struct humming **hobject, float editdistance)
+int resolve_keylength(struct hamming **hobject, float editdistance)
 {   /* this function is searching for the according keylength given a editdistance
-     * in a 'struct humming'; resolving the right keys for edit distances after
+     * in a 'struct hamming'; resolving the right keys for edit distances after
      * heapsort has done it's job
      */
         long i = 0;
@@ -205,9 +205,9 @@ int resolve_keylength(struct humming **hobject, float editdistance)
         return (*hobject)->keylength[i];
 }
 
-long humming_distance(char *word1, char *word2, long length)
+long hamming_distance(char *word1, char *word2, long length)
 {
-        /* this function is calculating humming distances for different keylength given the encrypted data
+        /* this function is calculating hamming distances for different keylength given the encrypted data
          * sorting by keylength and return the minimum edit distance found
          */
         char *word = xmalloc((length+1) * sizeof(char));
@@ -237,10 +237,10 @@ int get_keylength(struct histogram **hobject, int maxlength, char *data, long le
         int kctr = 0;
         int i; // counter variable for different key lengths
         int c; // outter counter, see splitter
-        float hd; // humming distance temp
+        float hd; // hamming distance temp
         char *first = NULL; // catches first keylength worth of bits from the data
         char *second = NULL; // catch second keylength wort of bits
-        struct humming *distances = xmalloc(sizeof(struct humming));
+        struct hamming *distances = xmalloc(sizeof(struct hamming));
         distances->keylength = xmalloc((maxlength-1) * sizeof(int));
         distances->keys_total = keys_total;
         distances->n_editdistance = xmalloc((maxlength-1) * sizeof(float));
@@ -257,7 +257,7 @@ int get_keylength(struct histogram **hobject, int maxlength, char *data, long le
                         temp_byte = data[c+i];
                         second[c] = temp_byte;
                 }
-                hd = humming_distance(first, second, i); 
+                hd = hamming_distance(first, second, i); 
                 distances->n_editdistance[i-2] = hd / i;
                 distances->keylength[i-2] = i;
                 xfree(first);
@@ -271,13 +271,13 @@ int get_keylength(struct histogram **hobject, int maxlength, char *data, long le
         memset(sorted_ed, 0, maxlength * sizeof(float));
         memcpy(&sorted_ed[1], &(*distances->n_editdistance), sizeof(float) * (maxlength-1));
         heapsort(&sorted_ed, maxlength-1);
-        memcpy(&(*(*hobject)->hum->n_editdistance), &sorted_ed[1], keys_total * sizeof(float));
+        memcpy(&(*(*hobject)->ham->n_editdistance), &sorted_ed[1], keys_total * sizeof(float));
         memcpy((*hobject)->data, data, length);
         for(kctr = 0; kctr < keys_total; kctr++) {
-               (*hobject)->hum->keylength[kctr] = 
+               (*hobject)->ham->keylength[kctr] = 
                 resolve_keylength(&distances, sorted_ed[kctr+1]);
-               printf("\nKeylength: %i\tEditdistance %0.5f", (*hobject)->hum->keylength[kctr],
-                                                        (*hobject)->hum->n_editdistance[kctr]);
+               printf("\nKeylength: %i\tEditdistance %0.5f", (*hobject)->ham->keylength[kctr],
+                                                        (*hobject)->ham->n_editdistance[kctr]);
         }
         xfree(distances->keylength);
         distances->keylength = NULL;

@@ -35,7 +35,7 @@ int main(int argc, char **argv)
         struct histogram *hist = hist_o_init(keys_total);
         length = active_b64_decode_string(&b64string, wholestring, strlen(wholestring));
         get_keylength(&hist, 20, b64string, length, keys_total);
-        transpose(&hist, &hist->tdata, &hist->data, length, hist->hum->keylength[0]);
+        transpose(&hist, &hist->tdata, &hist->data, length, hist->ham->keylength[0]);
         //hist->scores->testkey = xrealloc(hist->scores->testkey, (hist->tdata->elements + 1) * sizeof(char));
         int x;
         char ENCCHAR[] = "A\0";
