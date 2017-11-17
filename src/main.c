@@ -17,10 +17,6 @@
 
 #include <textcat.h>
 //void *h = textcat_Init("/usr/share/libexttextcat/fpdb.conf");
-char *conffile = "usr/share/libexttextcat/fpdb.conf";
-char *conffile = "fpdb.conf";
-void *h = textcat_Init(conffile);
-
 
 long hamming_test()
 {
@@ -36,6 +32,10 @@ long hamming_test()
 
 int main(int argc, char **argv)
 {
+	char *conffile = "usr/share/libexttextcat/fpdb.conf";
+	//char *conffile = "fpdb.conf";
+	void *h = textcat_Init(conffile);
+
         /*      
         s1c1();
         s1c2();
