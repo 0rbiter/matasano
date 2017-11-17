@@ -4,7 +4,10 @@ MKDIR_P = mkdir -p
 SRC_DIR = src/
 INC_DIR = include/
 BUILD_DIR = build/
-CFLAGS=-v -O0 -fno-strict-aliasing -fno-omit-frame-pointer -g 
+CFLAGS=-v -O0 -fno-strict-aliasing -fno-omit-frame-pointer -g
+ITEXTCAT = /usr/include/libexttextcat
+INC=$(ITEXTCAT) $(INC_DIR)
+INC_PARAMS=$(foreach d, $(INC), -I$d)
 LDFLAGS=-lm
 
 .PHONY: directories
@@ -28,7 +31,7 @@ $(BUILD_DIR)/$(EXECUTABLE): $(OBJECTS)
 	    $(CC) $(LDFLAGS) $^ -o $@
 
 $(OBJECTS): $(BUILD_DIR)/%.o : $(SRC_DIR)/%.c
-	    $(CC) $(CFLAGS) $< -c -o $@
+	    $(CC) $(CFLAGS) $(INC_PARAMS) $< -c -o $@
 
 clean:
 	$(RM) $(BUILD_DIR)/*.o

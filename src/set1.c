@@ -95,7 +95,7 @@ void s1c4()
         printf("Challenge 4\nread 60 keys from file and find the encryption character\nand the according line");
         printf("\n");
         char ENCCHAR[] = "A\0";
-        char filename[] = "/home/orbiter/matasano/src/challenge4keys.txt";
+        char filename[] = "/home/uniscon169/matasano/src/challenge4keys.txt";
         char *STR_STRING = xmalloc(1);
         char *STR_XOR = xmalloc(1);
         long lines = 0;

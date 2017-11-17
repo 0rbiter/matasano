@@ -15,16 +15,36 @@
 #include "../include/scoring.h"
 #endif 
 
+#include <textcat.h>
+//void *h = textcat_Init("/usr/share/libexttextcat/fpdb.conf");
+char *conffile = "usr/share/libexttextcat/fpdb.conf";
+char *conffile = "fpdb.conf";
+void *h = textcat_Init(conffile);
+
+
+long hamming_test()
+{
+	char *word1 = "this is a test";
+	char *word2 = "wokka wokka!!!";
+	long result = hamming_distance(word1, word2, 14);
+	if(result == 37)
+		printf("Hamming Test successful");
+	else
+		printf("Hamming Test unsuccessful");
+	printf(" with %ld\n", result);
+} 
+
 int main(int argc, char **argv)
 {
-        /*        
+        /*      
         s1c1();
         s1c2();
         s1c3();
         s1c4();
         s1c5();
-        */
-        char *filename6 = "/home/orbiter/matasano/src/challenge6keys.txt";
+	*/
+	hamming_test();
+        char *filename6 = "/home/uniscon169/matasano/src/challenge6keys.txt";
         struct file_o *filebuffer6 = read_bytes(filename6);
         file_o_init(filebuffer6);
         char *b64string = xmalloc(1);
@@ -44,6 +64,7 @@ int main(int argc, char **argv)
                         ENCCHAR[0] = x;
                         memset(STR_XOR, hist->tdata->elements, 0);
                         xor_bytes_to_string(&STR_XOR, hist->tdata->blocks[c], hist->tdata->lengths[c], ENCCHAR, 1);
+			printf( "Language: %s\n", textcat_Classify(h, STR_XOR, hist->tdata->lengths[c]));
                         //get_score(STR_XOR, hist->tdata->lengths[c], ENCCHAR, -100, 3.0f, 0);
                         add_betterscore(&hist, c, STR_XOR, ENCCHAR[0]);
                 }
@@ -62,5 +83,6 @@ int main(int argc, char **argv)
         for(x = 0; x < 26; x++)
                 tempf += pow((double) (letterscore_en[x] / 100.0), 2.0);
         printf("\n%0.5f\n\n", tempf);
+	textcat_Done(h);
 }
 
